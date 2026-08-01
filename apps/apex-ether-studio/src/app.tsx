@@ -55,6 +55,10 @@ interface TypographyValue {
   readonly family: string;
   readonly weight: number;
   readonly size: number;
+  readonly lineHeight: number;
+  readonly letterSpacing: number;
+  readonly marginBefore: number;
+  readonly marginAfter: number;
 }
 type TypographySettings = Readonly<Record<TypographyLevel, TypographyValue>>;
 
@@ -145,11 +149,11 @@ const fontSizes: Readonly<Record<TypographyLevel, readonly number[]>> = Object.f
 });
 
 const defaultTypography: TypographySettings = Object.freeze({
-  title: Object.freeze({ family: 'Manrope', weight: 700, size: 28 }),
-  hero: Object.freeze({ family: 'Space Grotesk', weight: 500, size: 40 }),
-  figures: Object.freeze({ family: 'Manrope', weight: 500, size: 40 }),
-  subtitle: Object.freeze({ family: 'Nunito Sans', weight: 500, size: 19 }),
-  small: Object.freeze({ family: 'Inter', weight: 500, size: 16 }),
+  title: Object.freeze({ family: 'Manrope', weight: 700, size: 28, lineHeight: 1.08, letterSpacing: -0.03, marginBefore: 0, marginAfter: 0 }),
+  hero: Object.freeze({ family: 'Space Grotesk', weight: 500, size: 40, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
+  figures: Object.freeze({ family: 'Manrope', weight: 500, size: 40, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
+  subtitle: Object.freeze({ family: 'Nunito Sans', weight: 500, size: 19, lineHeight: 1.25, letterSpacing: 0, marginBefore: 0, marginAfter: 0 }),
+  small: Object.freeze({ family: 'Inter', weight: 500, size: 16, lineHeight: 1.25, letterSpacing: 0.065, marginBefore: 0, marginAfter: 0 }),
 });
 
 const typographyLabels: Readonly<Record<TypographyLevel, string>> = Object.freeze({
@@ -171,6 +175,10 @@ function TypographyPreview({
     fontFamily: `"${value.family}", sans-serif`,
     fontSize: `${value.size}px`,
     fontWeight: value.weight,
+    lineHeight: value.lineHeight,
+    letterSpacing: `${value.letterSpacing}em`,
+    marginBlockStart: `${value.marginBefore}px`,
+    marginBlockEnd: `${value.marginAfter}px`,
   } as CSSProperties;
   const samples: Readonly<Record<TypographyLevel, ReactNode>> = {
     title: <><span>DIAGNÓSTICO</span><strong style={selectedStyle}>Estado del vehículo</strong></>,
@@ -206,18 +214,38 @@ function TypographyLab({
       `  --ether-font-title: "${value.title.family}", sans-serif;`,
       `  --ether-weight-title: ${value.title.weight};`,
       `  --ether-size-title: ${value.title.size}px;`,
+      `  --ether-line-height-title: ${value.title.lineHeight};`,
+      `  --ether-letter-spacing-title: ${value.title.letterSpacing}em;`,
+      `  --ether-margin-before-title: ${value.title.marginBefore}px;`,
+      `  --ether-margin-after-title: ${value.title.marginAfter}px;`,
       `  --ether-font-hero: "${value.hero.family}", sans-serif;`,
       `  --ether-weight-hero: ${value.hero.weight};`,
       `  --ether-size-hero: ${value.hero.size}px;`,
+      `  --ether-line-height-hero: ${value.hero.lineHeight};`,
+      `  --ether-letter-spacing-hero: ${value.hero.letterSpacing}em;`,
+      `  --ether-margin-before-hero: ${value.hero.marginBefore}px;`,
+      `  --ether-margin-after-hero: ${value.hero.marginAfter}px;`,
       `  --ether-font-figures: "${value.figures.family}", sans-serif;`,
       `  --ether-weight-figures: ${value.figures.weight};`,
       `  --ether-size-figures: ${value.figures.size}px;`,
+      `  --ether-line-height-figures: ${value.figures.lineHeight};`,
+      `  --ether-letter-spacing-figures: ${value.figures.letterSpacing}em;`,
+      `  --ether-margin-before-figures: ${value.figures.marginBefore}px;`,
+      `  --ether-margin-after-figures: ${value.figures.marginAfter}px;`,
       `  --ether-font-subtitle: "${value.subtitle.family}", sans-serif;`,
       `  --ether-weight-subtitle: ${value.subtitle.weight};`,
       `  --ether-size-subtitle: ${value.subtitle.size}px;`,
+      `  --ether-line-height-subtitle: ${value.subtitle.lineHeight};`,
+      `  --ether-letter-spacing-subtitle: ${value.subtitle.letterSpacing}em;`,
+      `  --ether-margin-before-subtitle: ${value.subtitle.marginBefore}px;`,
+      `  --ether-margin-after-subtitle: ${value.subtitle.marginAfter}px;`,
       `  --ether-font-small: "${value.small.family}", sans-serif;`,
       `  --ether-weight-small: ${value.small.weight};`,
       `  --ether-size-small: ${value.small.size}px;`,
+      `  --ether-line-height-small: ${value.small.lineHeight};`,
+      `  --ether-letter-spacing-small: ${value.small.letterSpacing}em;`,
+      `  --ether-margin-before-small: ${value.small.marginBefore}px;`,
+      `  --ether-margin-after-small: ${value.small.marginAfter}px;`,
       '}',
     ].join('\n');
     try {
@@ -229,7 +257,7 @@ function TypographyLab({
     }
   };
   return <details className="typography-lab" open={isOpen} onToggle={event => setIsOpen(event.currentTarget.open)}>
-    <summary><span>Tipografía</span><b>Cinco niveles · familia, peso y tamaño</b></summary>
+    <summary><span>Tipografía</span><b>Cinco niveles · forma, escala y ritmo</b></summary>
     <div className="typography-lab__content">
       <header>
         <div><span>APEX ETHER</span><strong>Jerarquía de lectura</strong></div>
@@ -277,6 +305,50 @@ function TypographyLab({
               >
                 {fontSizes[level].map(size => <option key={size} value={size}>{size} px</option>)}
               </select>
+            </label>
+            <label>
+              <span>Interlineado</span>
+              <input
+                type="number"
+                min="0.75"
+                max="2"
+                step="0.01"
+                value={value[level].lineHeight}
+                onChange={event => update(level, { lineHeight: Number(event.target.value) })}
+              />
+            </label>
+            <label>
+              <span>Espaciado · em</span>
+              <input
+                type="number"
+                min="-0.12"
+                max="0.2"
+                step="0.005"
+                value={value[level].letterSpacing}
+                onChange={event => update(level, { letterSpacing: Number(event.target.value) })}
+              />
+            </label>
+            <label>
+              <span>Margen superior · px</span>
+              <input
+                type="number"
+                min="0"
+                max="48"
+                step="1"
+                value={value[level].marginBefore}
+                onChange={event => update(level, { marginBefore: Number(event.target.value) })}
+              />
+            </label>
+            <label>
+              <span>Margen inferior · px</span>
+              <input
+                type="number"
+                min="0"
+                max="48"
+                step="1"
+                value={value[level].marginAfter}
+                onChange={event => update(level, { marginAfter: Number(event.target.value) })}
+              />
             </label>
             <TypographyPreview level={level} value={value[level]} />
           </fieldset>
@@ -675,6 +747,26 @@ export function ApexEtherStudio() {
     '--ether-size-figures': `${typography.figures.size}px`,
     '--ether-size-subtitle': `${typography.subtitle.size}px`,
     '--ether-size-small': `${typography.small.size}px`,
+    '--ether-line-height-title': typography.title.lineHeight,
+    '--ether-line-height-hero': typography.hero.lineHeight,
+    '--ether-line-height-figures': typography.figures.lineHeight,
+    '--ether-line-height-subtitle': typography.subtitle.lineHeight,
+    '--ether-line-height-small': typography.small.lineHeight,
+    '--ether-letter-spacing-title': `${typography.title.letterSpacing}em`,
+    '--ether-letter-spacing-hero': `${typography.hero.letterSpacing}em`,
+    '--ether-letter-spacing-figures': `${typography.figures.letterSpacing}em`,
+    '--ether-letter-spacing-subtitle': `${typography.subtitle.letterSpacing}em`,
+    '--ether-letter-spacing-small': `${typography.small.letterSpacing}em`,
+    '--ether-margin-before-title': `${typography.title.marginBefore}px`,
+    '--ether-margin-before-hero': `${typography.hero.marginBefore}px`,
+    '--ether-margin-before-figures': `${typography.figures.marginBefore}px`,
+    '--ether-margin-before-subtitle': `${typography.subtitle.marginBefore}px`,
+    '--ether-margin-before-small': `${typography.small.marginBefore}px`,
+    '--ether-margin-after-title': `${typography.title.marginAfter}px`,
+    '--ether-margin-after-hero': `${typography.hero.marginAfter}px`,
+    '--ether-margin-after-figures': `${typography.figures.marginAfter}px`,
+    '--ether-margin-after-subtitle': `${typography.subtitle.marginAfter}px`,
+    '--ether-margin-after-small': `${typography.small.marginAfter}px`,
     '--ether-highlight': palette.highlight,
     '--ether-accent': palette.highlight,
     '--ether-positive': palette.positive,

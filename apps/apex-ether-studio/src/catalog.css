@@ -123,7 +123,8 @@ button { font: inherit; }
   text-transform: uppercase;
 }
 
-.typography-lab select {
+.typography-lab select,
+.typography-lab input[type="number"] {
   width: 100%;
   min-width: 0;
   min-height: 40px;
@@ -137,14 +138,16 @@ button { font: inherit; }
   font-weight: 600;
 }
 
-.typography-lab select:focus-visible { outline: 3px solid color-mix(in srgb, var(--ether-highlight) 32%, transparent); outline-offset: 2px; }
+.typography-lab input[type="number"] { font-variant-numeric: tabular-nums; }
+.typography-lab select:focus-visible,
+.typography-lab input[type="number"]:focus-visible { outline: 3px solid color-mix(in srgb, var(--ether-highlight) 32%, transparent); outline-offset: 2px; }
 .typography-lab__preview {
   display: grid;
   grid-column: 1 / -1;
   align-content: start;
   gap: 5px;
   min-width: 0;
-  min-height: 132px;
+  min-height: 178px;
   margin-top: 2px;
   padding: 14px;
   overflow: hidden;

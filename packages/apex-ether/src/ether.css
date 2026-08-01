@@ -28,6 +28,26 @@
   --ether-size-figures: 40px;
   --ether-size-subtitle: 19px;
   --ether-size-small: 16px;
+  --ether-line-height-title: 1.08;
+  --ether-line-height-hero: .92;
+  --ether-line-height-figures: .92;
+  --ether-line-height-subtitle: 1.25;
+  --ether-line-height-small: 1.25;
+  --ether-letter-spacing-title: -.03em;
+  --ether-letter-spacing-hero: -.065em;
+  --ether-letter-spacing-figures: -.065em;
+  --ether-letter-spacing-subtitle: 0em;
+  --ether-letter-spacing-small: .065em;
+  --ether-margin-before-title: 0px;
+  --ether-margin-before-hero: 0px;
+  --ether-margin-before-figures: 0px;
+  --ether-margin-before-subtitle: 0px;
+  --ether-margin-before-small: 0px;
+  --ether-margin-after-title: 0px;
+  --ether-margin-after-hero: 0px;
+  --ether-margin-after-figures: 0px;
+  --ether-margin-after-subtitle: 0px;
+  --ether-margin-after-small: 0px;
   --ether-glass-text: rgb(255 255 255 / 96%);
   --ether-glass-text-muted: rgb(255 255 255 / 84%);
   --ether-glass-fill-start: rgb(255 255 255 / 13%);
@@ -111,19 +131,20 @@
   font-size: var(--ether-size-small);
   font-family: var(--ether-font-small);
   font-weight: var(--ether-weight-small);
-  letter-spacing: .065em;
-  line-height: 1.15;
+  margin-block: var(--ether-margin-before-small) var(--ether-margin-after-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
   opacity: .82;
   text-transform: uppercase;
 }
 
 .apex-ether-panel__header h3 {
-  margin: 0;
+  margin-block: var(--ether-margin-before-title) var(--ether-margin-after-title);
   font-size: var(--ether-size-title);
   font-family: var(--ether-font-title);
   font-weight: var(--ether-weight-title);
-  letter-spacing: -.03em;
-  line-height: 1.08;
+  letter-spacing: var(--ether-letter-spacing-title);
+  line-height: var(--ether-line-height-title);
 }
 
 .apex-ether-panel--solid .apex-ether-panel__header span {
@@ -154,6 +175,9 @@
   font-size: var(--ether-size-subtitle);
   font-family: var(--ether-font-subtitle);
   font-weight: var(--ether-weight-subtitle);
+  margin-block: var(--ether-margin-before-subtitle) var(--ether-margin-after-subtitle);
+  letter-spacing: var(--ether-letter-spacing-subtitle);
+  line-height: var(--ether-line-height-subtitle);
 }
 
 .apex-ether-panel-row > b {
@@ -161,6 +185,8 @@
   font-family: var(--ether-font-small);
   font-size: var(--ether-size-small);
   font-weight: var(--ether-weight-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
 }
 
 .apex-ether-panel-row > span {
@@ -175,6 +201,8 @@
   font-size: var(--ether-size-small);
   font-family: var(--ether-font-small);
   font-weight: var(--ether-weight-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
   opacity: .82;
 }
 
@@ -184,6 +212,8 @@
   font-size: var(--ether-size-small);
   font-weight: var(--ether-weight-figures);
   font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-panel-row[data-active] {
@@ -224,21 +254,26 @@
   font-size: var(--ether-size-figures);
   font-family: var(--ether-font-figures);
   font-weight: var(--ether-weight-figures);
-  letter-spacing: -.065em;
-  line-height: .92;
+  margin-block: var(--ether-margin-before-figures) var(--ether-margin-after-figures);
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-metric--hero strong {
   font-size: var(--ether-size-hero);
   font-family: var(--ether-font-hero);
   font-weight: var(--ether-weight-hero);
+  margin-block: var(--ether-margin-before-hero) var(--ether-margin-after-hero);
+  letter-spacing: var(--ether-letter-spacing-hero);
+  line-height: var(--ether-line-height-hero);
 }
 
 .apex-ether-metric small {
   margin-left: 5px;
   font-size: .4em;
   font-weight: 720;
-  letter-spacing: 0;
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
 }
 
 .apex-ether-metric em {
@@ -247,6 +282,9 @@
   font-style: normal;
   font-family: var(--ether-font-small);
   font-weight: var(--ether-weight-small);
+  margin-block: var(--ether-margin-before-small) var(--ether-margin-after-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
   opacity: .78;
 }
 
@@ -270,8 +308,8 @@
 .apex-ether-progress[data-tone="neutral"] { --ether-progress-color: var(--ether-neutral); }
 .apex-ether-progress > div { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
 .apex-ether-progress span,
-.apex-ether-progress small { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
-.apex-ether-progress strong { font-family: var(--ether-font-figures); font-size: var(--ether-size-subtitle); font-weight: var(--ether-weight-figures); }
+.apex-ether-progress small { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); letter-spacing: var(--ether-letter-spacing-small); line-height: var(--ether-line-height-small); }
+.apex-ether-progress strong { font-family: var(--ether-font-figures); font-size: var(--ether-size-subtitle); font-weight: var(--ether-weight-figures); letter-spacing: var(--ether-letter-spacing-figures); line-height: var(--ether-line-height-figures); }
 .apex-ether-progress > i { height: 8px; overflow: hidden; border-radius: 999px; background: rgb(255 255 255 / 24%); }
 .apex-ether-progress > i > b { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--ether-progress-color); transform-origin: left; }
 .apex-ether-progress > small { opacity: .82; }
@@ -310,8 +348,8 @@
   font-family: var(--ether-font-figures);
   font-weight: var(--ether-weight-figures);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -.085em;
-  line-height: .76;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-speed__main span {
@@ -331,8 +369,8 @@
   font-size: clamp(36px, calc(var(--ether-size-figures) * 1.5), 76px);
   font-family: var(--ether-font-figures);
   font-weight: var(--ether-weight-figures);
-  letter-spacing: -.065em;
-  line-height: .76;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-speed__meta span { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
@@ -378,8 +416,8 @@
   font-family: var(--ether-font-figures);
   font-weight: var(--ether-weight-figures);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -.06em;
-  line-height: .9;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-clock span[data-semantic="info"] {
@@ -396,6 +434,8 @@
   font-size: var(--ether-size-subtitle);
   font-family: var(--ether-font-subtitle);
   font-weight: var(--ether-weight-subtitle);
+  letter-spacing: var(--ether-letter-spacing-subtitle);
+  line-height: var(--ether-line-height-subtitle);
 }
 
 .apex-ether-clock b[data-tone] {
@@ -407,7 +447,8 @@
   font-family: var(--ether-font-figures);
   font-weight: var(--ether-weight-figures);
   font-variant-numeric: tabular-nums;
-  letter-spacing: .01em;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-clock b[data-tone="positive"] { color: var(--ether-ink); background: var(--ether-positive); }
@@ -446,8 +487,8 @@
   font-family: var(--ether-font-figures);
   font-weight: var(--ether-weight-figures);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -.095em;
-  line-height: .74;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
 }
 
 .apex-ether-position .apex-ether-panel__body > span {
@@ -526,8 +567,8 @@
 .apex-ether-wheels article[data-tone="danger"] b { color: var(--ether-ink); background: var(--ether-danger); }
 .apex-ether-wheels article[data-tone="danger"] strong { color: var(--ether-ink); }
 
-.apex-ether-wheels article strong { font-family: var(--ether-font-figures); font-size: calc(var(--ether-size-figures) * .58); font-weight: var(--ether-weight-figures); letter-spacing: -.05em; }
-.apex-ether-wheels article span { grid-column: 1 / -1; font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
+.apex-ether-wheels article strong { font-family: var(--ether-font-figures); font-size: calc(var(--ether-size-figures) * .58); font-weight: var(--ether-weight-figures); letter-spacing: var(--ether-letter-spacing-figures); line-height: var(--ether-line-height-figures); }
+.apex-ether-wheels article span { grid-column: 1 / -1; font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); letter-spacing: var(--ether-letter-spacing-small); line-height: var(--ether-line-height-small); }
 .apex-ether-wheels article i { grid-column: 1 / -1; height: 6px; overflow: hidden; border-radius: 20px; background: #dadddc; }
 .apex-ether-wheels article i em { display: block; height: 100%; background: var(--ether-positive); }
 .apex-ether-wheels article[data-tone="warning"] i em { background: var(--ether-warning); }
@@ -697,7 +738,8 @@
   font-family: var(--ether-font-small);
   font-size: calc(var(--ether-size-small) * .78);
   font-weight: 700;
-  line-height: 1;
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
   text-shadow: 0 1px 4px rgb(0 0 0 / 48%);
 }
 
@@ -717,9 +759,9 @@
 
 .apex-ether-vehicle-contact__readout > div { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .apex-ether-vehicle-contact__readout strong,
-.apex-ether-vehicle-contact__readout b { font-family: var(--ether-font-subtitle); font-size: var(--ether-size-subtitle); font-weight: 700; }
-.apex-ether-vehicle-contact__readout > span { font-family: var(--ether-font-subtitle); font-size: calc(var(--ether-size-subtitle) * .88); font-weight: var(--ether-weight-subtitle); }
-.apex-ether-vehicle-contact__readout small { color: #fff; font-family: var(--ether-font-small); font-size: calc(var(--ether-size-small) * .78); font-weight: var(--ether-weight-small); line-height: 1.2; opacity: 1; }
+.apex-ether-vehicle-contact__readout b { font-family: var(--ether-font-subtitle); font-size: var(--ether-size-subtitle); font-weight: 700; letter-spacing: var(--ether-letter-spacing-subtitle); line-height: var(--ether-line-height-subtitle); }
+.apex-ether-vehicle-contact__readout > span { font-family: var(--ether-font-subtitle); font-size: calc(var(--ether-size-subtitle) * .88); font-weight: var(--ether-weight-subtitle); letter-spacing: var(--ether-letter-spacing-subtitle); line-height: var(--ether-line-height-subtitle); }
+.apex-ether-vehicle-contact__readout small { color: #fff; font-family: var(--ether-font-small); font-size: calc(var(--ether-size-small) * .78); font-weight: var(--ether-weight-small); letter-spacing: var(--ether-letter-spacing-small); line-height: var(--ether-line-height-small); opacity: 1; }
 
 .apex-ether-vehicle-contact__state {
   display: block;
