@@ -1,6 +1,6 @@
 # Apex Ether
 
-Sistema modular de HUD y telemetría automotriz creado por **Jonathan Villaverde**.
+Sistema modular de HUD y telemetría automotriz por **Jonathan Villaverde**.
 
 Apex Ether convierte datos de conducción en interfaces claras, configurables y eficientes. Nace como una pieza independiente dentro del ecosistema Apex: puede acompañar a Apex Drive, integrarse en otra experiencia React o servir como base para interfaces personalizadas sin quedar unido al ciclo de vida de una aplicación concreta.
 
