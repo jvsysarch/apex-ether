@@ -346,7 +346,7 @@
 
 .apex-ether-speed__main {
   display: flex;
-  align-items: end;
+  align-items: baseline;
   gap: 9px;
 }
 
@@ -361,10 +361,12 @@
 }
 
 .apex-ether-speed__main span {
-  padding-bottom: 5px;
   font-size: var(--ether-size-small);
   font-family: var(--ether-font-small);
   font-weight: var(--ether-weight-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
+  white-space: nowrap;
 }
 
 .apex-ether-speed__meta {
