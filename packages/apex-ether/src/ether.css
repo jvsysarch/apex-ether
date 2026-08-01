@@ -333,8 +333,8 @@
 .apex-ether-speed .apex-ether-panel__body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 13px 22px;
-  min-width: 260px;
+  gap: 18px 28px;
+  min-width: 300px;
 }
 
 .apex-ether-speed__main {
@@ -361,6 +361,8 @@
 
 .apex-ether-speed__meta {
   display: grid;
+  min-width: 86px;
+  align-content: center;
   justify-items: end;
   gap: 2px;
 }
@@ -374,11 +376,106 @@
 }
 
 .apex-ether-speed__meta span { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
-.apex-ether-speed__meta i {
-  width: 104px;
-  height: 7px;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--ether-highlight) calc(var(--apex-ether-rpm) * 100%), #cbd5d0 0);
+
+.apex-ether-tachometer {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.apex-ether-speed .apex-ether-tachometer { grid-column: 1 / -1; }
+
+.apex-ether-tachometer > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.apex-ether-tachometer > div span {
+  font-family: var(--ether-font-small);
+  font-size: var(--ether-size-small);
+  font-weight: var(--ether-weight-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
+}
+
+.apex-ether-tachometer > div strong {
+  font-family: var(--ether-font-figures);
+  font-size: calc(var(--ether-size-figures) * .72);
+  font-weight: var(--ether-weight-figures);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ether-letter-spacing-figures);
+  line-height: var(--ether-line-height-figures);
+}
+
+.apex-ether-tachometer > i {
+  position: relative;
+  display: block;
+  height: 11px;
+  overflow: visible;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 25%);
+}
+
+.apex-ether-panel--solid .apex-ether-tachometer > i { background: rgb(23 34 31 / 14%); }
+
+.apex-ether-tachometer > i > b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ether-highlight);
+  transform: scaleX(var(--apex-ether-rpm));
+  transform-origin: left;
+}
+
+.apex-ether-tachometer > i > em {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: calc(var(--apex-ether-redline) * 100%);
+  width: 3px;
+  border-radius: 3px;
+  background: var(--ether-danger);
+  content: '';
+  transform: translateX(-2px);
+}
+
+.apex-ether-tachometer ol {
+  display: grid;
+  grid-template-columns: repeat(var(--apex-ether-tach-columns), minmax(0, 1fr));
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.apex-ether-tachometer li {
+  color: currentColor;
+  font-family: var(--ether-font-small);
+  font-size: max(13px, calc(var(--ether-size-small) * .82));
+  font-weight: var(--ether-weight-small);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  opacity: .82;
+}
+
+.apex-ether-tachometer li:last-child { text-align: right; }
+
+.apex-ether-tachometer li:not(:first-child, :last-child) {
+  position: relative;
+  text-align: center;
+}
+
+.apex-ether-tachometer li:not(:first-child, :last-child)::before {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  width: 1px;
+  height: 5px;
+  background: currentColor;
+  content: '';
+  opacity: .55;
 }
 
 .apex-ether-pedals {

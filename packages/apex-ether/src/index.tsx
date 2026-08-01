@@ -266,11 +266,41 @@ export const ApexEtherMetric = memo(({ label, value, unit, detail, tone = 'neutr
   </div>
 ));
 
+/** Compact tachometer shared by driving and vehicle-dynamics compositions. */
+export const ApexEtherTachometer = memo(({
+  rpm,
+  maximumRpm,
+}: {
+  readonly rpm: number;
+  readonly maximumRpm: number;
+}) => {
+  const scaleMaximum = Math.max(1, Math.ceil(maximumRpm / 1000));
+  const normalizedRpm = Math.min(1, Math.max(0, rpm / (scaleMaximum * 1000)));
+  const normalizedRedline = Math.min(1, Math.max(0, maximumRpm / (scaleMaximum * 1000)));
+  const ticks = useMemo(() => Array.from({ length: scaleMaximum + 1 }, (_, index) => index), [scaleMaximum]);
+  const style = {
+    '--apex-ether-rpm': normalizedRpm,
+    '--apex-ether-redline': normalizedRedline,
+    '--apex-ether-tach-columns': ticks.length,
+  } as CSSProperties;
+  return <div className="apex-ether-tachometer" style={style}>
+    <div><span>RPM ×1000</span><strong>{(rpm / 1000).toFixed(1).replace('.', ',')}</strong></div>
+    <i
+      role="progressbar"
+      aria-label="Revoluciones por minuto"
+      aria-valuemin={0}
+      aria-valuemax={maximumRpm}
+      aria-valuenow={Math.round(rpm)}
+    ><b /><em /></i>
+    <ol aria-hidden="true">{ticks.map(tick => <li key={tick}>{tick}</li>)}</ol>
+  </div>;
+});
+
 export const ApexEtherSpeed = memo(({ motion, mode = 'glass' }: { motion: ApexEtherMotion; mode?: ApexEtherSurfaceMode }) => {
-  const rpm = Math.min(1, Math.max(0, motion.rpm / Math.max(1, motion.maximumRpm)));
   return <ApexEtherSurface title="Conducción" mode={mode} className="apex-ether-speed">
     <div className="apex-ether-speed__main"><strong>{Math.round(motion.speedKmh)}</strong><span>km/h</span></div>
-    <div className="apex-ether-speed__meta"><b>{motion.gear}</b><span>Marcha</span><i style={{ '--apex-ether-rpm': rpm } as CSSProperties} /></div>
+    <div className="apex-ether-speed__meta"><b>{motion.gear}</b><span>Marcha</span></div>
+    <ApexEtherTachometer rpm={motion.rpm} maximumRpm={motion.maximumRpm} />
     <div className="apex-ether-pedals" aria-label="Entrada de controles"><i style={{ '--apex-ether-level': motion.throttle } as CSSProperties}>Acel.</i><i style={{ '--apex-ether-level': motion.brake } as CSSProperties}>Freno</i></div>
   </ApexEtherSurface>;
 });

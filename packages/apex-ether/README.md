@@ -64,6 +64,7 @@ export function SessionSummary() {
 - `ApexEtherMetricGrid`
 - `ApexEtherMetric`
 - `ApexEtherProgress`
+- `ApexEtherTachometer`
 
 ### Paneles de dominio
 

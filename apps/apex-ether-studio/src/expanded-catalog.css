@@ -96,7 +96,9 @@
 .expanded-layout--timing { grid-template-columns: 1.08fr .92fr .85fr; }
 .expanded-timing-now .apex-ether-metric:first-child strong { font-size: clamp(52px, 5vw, 88px); }
 
-.expanded-layout--dynamics { grid-template-columns: 1.05fr .88fr 1.1fr; }
+.expanded-layout--dynamics { grid-template-columns: 1.12fr 1fr 1.08fr; }
+.expanded-dynamics-summary .apex-ether-tachometer { padding-bottom: 18px; border-bottom: 1px solid currentColor; }
+.expanded-dynamics-summary .apex-ether-metric-grid { gap: 24px 18px; }
 .expanded-contact-map { position: relative; display: grid; min-height: 455px; place-items: center; }
 .expanded-contact-map__vehicle { position: relative; width: 138px; height: 310px; border: 3px solid currentColor; border-radius: 48px 48px 34px 34px; }
 .expanded-contact-map__vehicle::before,

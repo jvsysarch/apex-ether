@@ -6,6 +6,7 @@ import {
   ApexEtherPanelRow,
   ApexEtherProgress,
   ApexEtherSurface,
+  ApexEtherTachometer,
   ApexEtherVehicleContact,
   type ApexEtherSurfaceMode,
   type ApexEtherTone,
@@ -118,6 +119,7 @@ function DynamicsView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
   return <div className="expanded-layout expanded-layout--dynamics" id="vehicle-contact">
     <ApexEtherVehicleContact wheels={wheelStates} mode={mode} />
     <ApexEtherSurface title="Dinámica instantánea" eyebrow="Valores de decisión" mode={mode} className="expanded-dynamics-summary">
+      <ApexEtherTachometer rpm={6840} maximumRpm={8200} />
       <ApexEtherMetricGrid columns={2}>
         <ApexEtherMetric label="Dirección" value="+7,0" unit="°" tone="info" />
         <ApexEtherMetric label="Carga total" value="16,2" unit="kN" />
@@ -175,7 +177,7 @@ function PowertrainView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
       <div className="expanded-state-heading"><SemanticBadge tone="positive">Acoplado</SemanticBadge><strong>Marcha 4</strong></div>
       <ApexEtherProgress label="Embrague" value={.94} valueLabel="94%" tone="positive" detail="Entrega estable" />
       <ApexEtherMetricGrid columns={2}>
-        <ApexEtherMetric label="RPM" value="6.840" tone="emphasis" />
+        <ApexEtherMetric label="RPM ×1000" value="6,84" tone="emphasis" />
         <ApexEtherMetric label="Cambio" value="Listo" tone="positive" />
       </ApexEtherMetricGrid>
     </ApexEtherSurface>
