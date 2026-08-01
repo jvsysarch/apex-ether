@@ -109,10 +109,10 @@ function TimingView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
 }
 
 const wheelStates = [
-  { id: 'FL', temperatureC: 87, pressurePsi: 27.6, loadKn: 4.2, gripPercent: 97.2, slipPercent: 2.8, steeringAngleDeg: 7, compression: .58, tone: 'positive' },
-  { id: 'FR', temperatureC: 90, pressurePsi: 27.8, loadKn: 4.5, gripPercent: 96.9, slipPercent: 3.1, steeringAngleDeg: 6.4, compression: .64, tone: 'positive' },
-  { id: 'RL', temperatureC: 94, pressurePsi: 28.1, loadKn: 3.8, gripPercent: 88.8, slipPercent: 11.2, steeringAngleDeg: 0, compression: .83, tone: 'warning' },
-  { id: 'RR', temperatureC: 92, pressurePsi: 28, loadKn: 3.7, gripPercent: 95.2, slipPercent: 4.8, steeringAngleDeg: 0, compression: .61, tone: 'info' },
+  { id: 'FL', temperatureC: 91, pressurePsi: 27.8, loadKn: 5.2, gripPercent: 93.2, slipPercent: 6.8, steeringAngleDeg: 7, compression: .82, tone: 'info' },
+  { id: 'FR', temperatureC: 86, pressurePsi: 27.5, loadKn: 3.2, gripPercent: 97.7, slipPercent: 2.3, steeringAngleDeg: 6.4, compression: .34, tone: 'positive' },
+  { id: 'RL', temperatureC: 94, pressurePsi: 28.1, loadKn: 4.9, gripPercent: 91.1, slipPercent: 8.9, steeringAngleDeg: 0, compression: .78, tone: 'warning' },
+  { id: 'RR', temperatureC: 85, pressurePsi: 27.4, loadKn: 3.1, gripPercent: 97.2, slipPercent: 2.8, steeringAngleDeg: 0, compression: .38, tone: 'positive' },
 ] as const;
 
 function DynamicsView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
