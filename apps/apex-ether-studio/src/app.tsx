@@ -140,13 +140,13 @@ const paletteLabels = {
   neutral: ['Neutral', 'Datos secundarios e inactivos'],
 } as const satisfies Readonly<Record<PaletteRole, readonly [string, string]>>;
 
-const fontSizes: Readonly<Record<TypographyLevel, readonly number[]>> = Object.freeze({
-  title: Object.freeze([16, 18, 20, 22, 24, 26, 28, 30]),
-  hero: Object.freeze([24, 28, 32, 36, 40, 44, 48, 52]),
-  speed: Object.freeze([64, 72, 80, 88, 96, 104, 112, 120]),
-  figures: Object.freeze([28, 32, 36, 40, 44, 48, 52, 56]),
-  subtitle: Object.freeze([14, 15, 16, 17, 18, 19, 20, 22]),
-  small: Object.freeze([10, 11, 12, 13, 14, 15, 16, 17]),
+const fontSizeRanges: Readonly<Record<TypographyLevel, { readonly min: number; readonly max: number }>> = Object.freeze({
+  title: Object.freeze({ min: 12, max: 72 }),
+  hero: Object.freeze({ min: 18, max: 120 }),
+  speed: Object.freeze({ min: 48, max: 240 }),
+  figures: Object.freeze({ min: 20, max: 160 }),
+  subtitle: Object.freeze({ min: 12, max: 64 }),
+  small: Object.freeze({ min: 10, max: 40 }),
 });
 
 const defaultTypography: TypographySettings = Object.freeze({
@@ -273,7 +273,7 @@ function TypographyLab({
     <div className="typography-lab__content">
       <header>
         <div><span>APEX ETHER</span><strong>Jerarquía de lectura</strong></div>
-        <p>Cada muestra reproduce el uso real del nivel seleccionado.</p>
+        <p>Vista previa 1:1 en píxeles CSS lógicos. Cada valor puede escribirse directamente.</p>
         <button type="button" onClick={() => void copySettings()}>
           {copyState === 'copied'
             ? 'Configuración copiada'
@@ -316,13 +316,15 @@ function TypographyLab({
               </select>
             </label>
             <label>
-              <span>Tamaño</span>
-              <select
+              <span>Tamaño · px CSS</span>
+              <input
+                type="number"
+                min={fontSizeRanges[selectedLevel].min}
+                max={fontSizeRanges[selectedLevel].max}
+                step="1"
                 value={value[selectedLevel].size}
                 onChange={event => update(selectedLevel, { size: Number(event.target.value) })}
-              >
-                {fontSizes[selectedLevel].map(size => <option key={size} value={size}>{size} px</option>)}
-              </select>
+              />
             </label>
             <label>
               <span>Interlineado</span>
