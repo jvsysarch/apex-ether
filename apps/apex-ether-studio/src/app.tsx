@@ -620,6 +620,33 @@ function Library() {
   return <section className="catalog-library"><header><span>Sistema modular</span><h2>Catálogo de información</h2><p>Las métricas se organizan por decisión del conductor. Cada bloque puede vivir solo, en overlay o dentro de una superficie de vidrio claro u opaca.</p></header><div>{metrics.map(([title, text], index) => <article key={title}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div></section>;
 }
 
+function Motivation() {
+  const principles = [
+    ['Frontera independiente', 'La simulación produce datos; Ether decide cómo presentarlos. Ningún panel necesita conocer el motor físico, la escena o el ciclo de juego.'],
+    ['Jerarquía antes que volumen', 'La información se organiza por decisiones del conductor. Cada composición muestra lo necesario para carrera, estrategia, diagnóstico o aprendizaje.'],
+    ['Costo de render predecible', 'Los datos se publican por segmentos y cada panel escucha únicamente su porción. La frecuencia de la simulación no obliga a redibujar toda la interfaz.'],
+  ] as const;
+  return <section className="catalog-motivation" id="motivation">
+    <header><span>Motivación</span><h2>La telemetría es compleja.<br />La lectura no debería serlo.</h2><p>Un simulador puede producir cientos de señales por segundo, pero el conductor dispone de instantes para comprenderlas. Apex Ether convierte ese flujo en componentes legibles, configurables y desacoplados.</p></header>
+    <div>{principles.map(([title, text], index) => <article key={title}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div>
+  </section>;
+}
+
+function Ecosystem() {
+  return <section className="catalog-ecosystem" id="ecosystem">
+    <header><span>Integración con Apex</span><h2>Una frontera clara entre datos y experiencia</h2><p>Apex Ether recibe contratos de telemetría estables y devuelve componentes React. El resto del ecosistema conserva sus responsabilidades.</p></header>
+    <div className="catalog-ecosystem__flow" aria-label="Flujo de integración de Apex Ether">
+      <article><span>Productores</span><strong>Apex Physics<br />Apex Run</strong><p>Movimiento, carrera, neumáticos, ruta y sesión.</p></article>
+      <i aria-hidden="true">→</i>
+      <article><span>Contrato</span><strong>Adaptador de telemetría</strong><p>Normaliza unidades y publica únicamente los segmentos modificados.</p></article>
+      <i aria-hidden="true">→</i>
+      <article data-primary><span>Sistema visual</span><strong>@jvsysarch/apex-ether</strong><p>Paneles, tokens, modos de superficie y suscripciones selectivas.</p></article>
+      <i aria-hidden="true">→</i>
+      <article><span>Consumidores</span><strong>Apex Drive<br />Ether Studio</strong><p>HUD integrado, catálogo, Lab y futuras interfaces personalizadas.</p></article>
+    </div>
+  </section>;
+}
+
 function Performance() {
   return <section className="catalog-performance"><span>Presupuesto de rendimiento</span><h2>Lectura clara y actualización estable</h2><div><article><b>01</b><h3>Datos segmentados</h3><p>Movimiento, carrera, ruta y vehículo se publican por separado. Cada panel recibe únicamente la información que necesita.</p></article><article><b>02</b><h3>Composición por demanda</h3><p>Se montan únicamente los paneles elegidos. Las rutas y los gráficos trabajan cuando están visibles.</p></article><article><b>03</b><h3>Superficie liviana</h3><p>El vidrio utiliza una capa semitransparente y el desenfoque se regula según el presupuesto visual disponible.</p></article><article><b>04</b><h3>Números estables</h3><p>Tipografía tabular, estructura compacta y transformaciones aisladas mantienen fluidos los datos de alta frecuencia.</p></article></div></section>;
 }
@@ -685,8 +712,10 @@ export function ApexEtherStudio() {
     </div> : null}
     <section className="catalog-hero"><p>Apex Ether · sistema de telemetría</p><h1>Información que se lee.<br /><i>Espacio para conducir.</i></h1><div><span>Pantallas amplias · 24”+</span><span>Vidrio transparente · blanco opaco</span><span>Carrera · vehículo · estrategia</span></div></section>
     <section className="catalog-intro"><p>Una familia de interfaces de conducción, carrera y diagnóstico. No es una sola pantalla recargada: cada composición responde a un momento de uso y puede elegir sus propios paneles.</p></section>
+    <Motivation />
     <section className="catalog-frames"><Frame title="Carrera en vivo" subtitle="Composición completa · información periférica" mode="glass" background="mountain"><RaceBroadcast mode="glass" /></Frame><Frame title="Ataque de vuelta" subtitle="Foco absoluto · feedback inmediato" mode="glass" background="night"><TrackAttack mode="glass" /></Frame><Frame title="Estado del vehículo" subtitle="Diagnóstico claro · datos comparables" mode="solid" background="mountain"><CarCare mode="solid" /></Frame><Frame title="Brief de sesión" subtitle="Configuración · objetivos y contexto" mode="solid" background="night"><SessionBrief mode="solid" /></Frame></section>
     <ExpandedCatalog />
+    <Ecosystem />
     <Library /><Performance />
     <footer className="catalog-footer">
       <div><strong>Apex Ether</strong><span>Creado por Jonathan Villaverde · © 2026</span></div>
