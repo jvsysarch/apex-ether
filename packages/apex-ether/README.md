@@ -24,6 +24,27 @@ Importá la hoja de estilos una vez:
 import '@jvsysarch/apex-ether/styles.css';
 ```
 
+## Idioma
+
+Los paneles propios del paquete incluyen español e inglés. Envolvé la composición con `ApexEtherLocaleProvider`; el idioma predeterminado es español.
+
+```tsx
+import {
+  ApexEtherLocaleProvider,
+  type ApexEtherLocale,
+} from '@jvsysarch/apex-ether';
+
+export function Hud({ locale }: { locale: ApexEtherLocale }) {
+  return (
+    <ApexEtherLocaleProvider locale={locale}>
+      {/* Paneles o ApexEtherHud */}
+    </ApexEtherLocaleProvider>
+  );
+}
+```
+
+Las etiquetas de datos suministradas por el host siguen perteneciendo al host y deben entregarse en el idioma elegido. Ether traduce sus títulos, estados, unidades editoriales y textos de accesibilidad internos.
+
 ## Composición básica
 
 La cabecera es opcional. Un panel sólo debe declarar `title` o `eyebrow` cuando agregan contexto; componentes autosuficientes como el velocímetro pueden omitirlos sin reservar espacio vacío.
@@ -53,6 +74,9 @@ export function SessionSummary() {
 
 - `ApexEtherTelemetryStore`
 - `ApexEtherProvider`
+- `ApexEtherLocaleProvider`
+- `useApexEtherLocale`
+- `etherText`
 - `useApexEtherSlice`
 - `ApexEtherHud`
 
@@ -90,6 +114,7 @@ export function SessionSummary() {
 - `ApexEtherSession`
 - `ApexEtherRoutePoint`
 - `ApexEtherSurfaceMode`
+- `ApexEtherLocale`
 - `ApexEtherTone`
 - `ApexEtherPanelId`
 

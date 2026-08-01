@@ -59,6 +59,7 @@ apex-ether/
 - `/?lab=true`: catálogo con herramientas de tipografía, paleta, sombras y superficie.
 - `/lab`: acceso alternativo al laboratorio.
 - `/lab?section=typography`: laboratorio con Tipografía desplegada.
+- `/?lang=es` y `/?lang=en`: catálogo completo en español o inglés. La selección ES/EN se conserva entre sesiones y puede combinarse con cualquier otra ruta, por ejemplo `/?lab=true&lang=en`.
 
 ## Desarrollo local
 

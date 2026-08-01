@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import {
   ApexEtherInput,
+  ApexEtherLocaleProvider,
   ApexEtherLeaderboard,
   ApexEtherMetric,
   ApexEtherObjectives,
@@ -11,11 +12,13 @@ import {
   ApexEtherSpeed,
   ApexEtherSurface,
   ApexEtherWheelHealth,
+  type ApexEtherLocale,
   type ApexEtherSurfaceMode,
   type ApexEtherTelemetry,
 } from '@jvsysarch/apex-ether';
 import '@jvsysarch/apex-ether/styles.css';
 import { ExpandedCatalog } from './expanded-catalog';
+import { StudioLocaleProvider, useStudioText } from './i18n';
 import mountainBackground from './assets/ether-mountain-route-v1.png';
 import nightBackground from './assets/ether-riverside-night-v1.png';
 import './catalog.css';
@@ -133,13 +136,13 @@ const defaultPalette: PaletteSettings = Object.freeze({
 });
 
 const paletteLabels = {
-  highlight: ['Highlight', 'Selección, foco y dato actual'],
-  positive: ['Positivo', 'Mejora, listo y completado'],
-  info: ['Información', 'Contexto, navegación y ayuda'],
-  warning: ['Warning', 'Atención y límite próximo'],
-  danger: ['Peligro', 'Falla, crítico y acción inmediata'],
-  neutral: ['Neutral', 'Datos secundarios e inactivos'],
-} as const satisfies Readonly<Record<PaletteRole, readonly [string, string]>>;
+  highlight: [['Highlight', 'Highlight'], ['Selección, foco y dato actual', 'Selection, focus and current data']],
+  positive: [['Positivo', 'Positive'], ['Mejora, listo y completado', 'Improvement, ready and complete']],
+  info: [['Información', 'Information'], ['Contexto, navegación y ayuda', 'Context, navigation and help']],
+  warning: [['Warning', 'Warning'], ['Atención y límite próximo', 'Attention and approaching limit']],
+  danger: [['Peligro', 'Danger'], ['Falla, crítico y acción inmediata', 'Failure, critical state and immediate action']],
+  neutral: [['Neutral', 'Neutral'], ['Datos secundarios e inactivos', 'Secondary and inactive data']],
+} as const satisfies Readonly<Record<PaletteRole, readonly [readonly [string, string], readonly [string, string]]>>;
 
 const fontSizeRanges: Readonly<Record<TypographyLevel, { readonly min: number; readonly max: number }>> = Object.freeze({
   title: Object.freeze({ min: 12, max: 72 }),
@@ -159,13 +162,13 @@ const defaultTypography: TypographySettings = Object.freeze({
   small: Object.freeze({ family: 'Inter', weight: 400, size: 12, lineHeight: 1.25, letterSpacing: 0.065, marginBefore: 0, marginAfter: 0 }),
 });
 
-const typographyLabels: Readonly<Record<TypographyLevel, string>> = Object.freeze({
-  title: 'Títulos',
-  hero: 'Panel hero',
-  speed: 'Velocímetro',
-  figures: 'Cifras y telemetría',
-  subtitle: 'Subtítulos y filas',
-  small: 'Etiquetas y unidades',
+const typographyLabels: Readonly<Record<TypographyLevel, readonly [string, string]>> = Object.freeze({
+  title: ['Títulos', 'Titles'],
+  hero: ['Panel hero', 'Hero panel'],
+  speed: ['Velocímetro', 'Speedometer'],
+  figures: ['Cifras y telemetría', 'Figures and telemetry'],
+  subtitle: ['Subtítulos y filas', 'Subtitles and rows'],
+  small: ['Etiquetas y unidades', 'Labels and units'],
 });
 
 function TypographyPreview({
@@ -175,6 +178,7 @@ function TypographyPreview({
   readonly level: TypographyLevel;
   readonly value: TypographyValue;
 }) {
+  const t = useStudioText();
   const selectedStyle = {
     fontFamily: `"${value.family}", sans-serif`,
     fontSize: `${value.size}px`,
@@ -185,12 +189,12 @@ function TypographyPreview({
     marginBlockEnd: `${value.marginAfter}px`,
   } as CSSProperties;
   const samples: Readonly<Record<TypographyLevel, ReactNode>> = {
-    title: <><span>DIAGNÓSTICO</span><strong style={selectedStyle}>Estado del vehículo</strong></>,
-    hero: <><span>VEHÍCULO</span><strong style={selectedStyle}>Apex GT</strong><small>Tracción trasera · Sport+</small></>,
-    speed: <><span>VELOCIDAD</span><div><strong style={selectedStyle}>278</strong><small>km/h</small></div></>,
-    figures: <><span>RÉGIMEN</span><div><strong style={selectedStyle}>6,8</strong><small>RPM ×1000</small></div></>,
-    subtitle: <><span>CONFIGURACIÓN ACTIVA</span><strong style={selectedStyle}>Tracción trasera · Sport+</strong></>,
-    small: <><span style={selectedStyle}>TEMPERATURA</span><div><strong>85</strong><small style={selectedStyle}>°C</small></div></>,
+    title: <><span>{t('DIAGNÓSTICO', 'DIAGNOSTICS')}</span><strong style={selectedStyle}>{t('Estado del vehículo', 'Vehicle status')}</strong></>,
+    hero: <><span>{t('VEHÍCULO', 'VEHICLE')}</span><strong style={selectedStyle}>Apex GT</strong><small>{t('Tracción trasera · Sport+', 'Rear-wheel drive · Sport+')}</small></>,
+    speed: <><span>{t('VELOCIDAD', 'SPEED')}</span><div><strong style={selectedStyle}>278</strong><small>km/h</small></div></>,
+    figures: <><span>{t('RÉGIMEN', 'ENGINE SPEED')}</span><div><strong style={selectedStyle}>{t('6,8', '6.8')}</strong><small>RPM ×1000</small></div></>,
+    subtitle: <><span>{t('CONFIGURACIÓN ACTIVA', 'ACTIVE SETUP')}</span><strong style={selectedStyle}>{t('Tracción trasera · Sport+', 'Rear-wheel drive · Sport+')}</strong></>,
+    small: <><span style={selectedStyle}>{t('TEMPERATURA', 'TEMPERATURE')}</span><div><strong>85</strong><small style={selectedStyle}>°C</small></div></>,
   };
   return <div className="typography-lab__preview" data-level={level}>{samples[level]}</div>;
 }
@@ -243,6 +247,7 @@ function TypographyLab({
   readonly value: TypographySettings;
   readonly onChange: (value: TypographySettings) => void;
 }) {
+  const t = useStudioText();
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
   const [isOpen, setIsOpen] = useState(
     () => new URLSearchParams(window.location.search).get('section') === 'typography',
@@ -311,34 +316,34 @@ function TypographyLab({
     }
   };
   return <details className="typography-lab" open={isOpen} onToggle={event => setIsOpen(event.currentTarget.open)}>
-    <summary><span>Tipografía</span><b>Seis niveles · forma, escala y ritmo</b></summary>
+    <summary><span>{t('Tipografía', 'Typography')}</span><b>{t('Seis niveles · forma, escala y ritmo', 'Six levels · form, scale and rhythm')}</b></summary>
     <div className="typography-lab__content">
       <header>
-        <div><span>APEX ETHER</span><strong>Jerarquía de lectura</strong></div>
-        <p>Vista previa 1:1 en píxeles CSS lógicos. Cada valor puede escribirse directamente.</p>
+        <div><span>APEX ETHER</span><strong>{t('Jerarquía de lectura', 'Reading hierarchy')}</strong></div>
+        <p>{t('Vista previa 1:1 en píxeles CSS lógicos. Cada valor puede escribirse directamente.', '1:1 preview in logical CSS pixels. Every value can be entered directly.')}</p>
         <button type="button" onClick={() => void copySettings()}>
           {copyState === 'copied'
-            ? 'Configuración copiada'
+            ? t('Configuración copiada', 'Configuration copied')
             : copyState === 'error'
-              ? 'No se pudo copiar'
-              : 'Copiar configuración'}
+              ? t('No se pudo copiar', 'Could not copy')
+              : t('Copiar configuración', 'Copy configuration')}
         </button>
         <output aria-live="polite">
-          {copyState === 'copied' ? 'Los tokens CSS están en el portapapeles.' : ''}
+          {copyState === 'copied' ? t('Los tokens CSS están en el portapapeles.', 'CSS tokens are in the clipboard.') : ''}
         </output>
       </header>
       <div className="typography-lab__controls">
-        <nav className="typography-lab__level-tabs" aria-label="Nivel tipográfico">
+        <nav className="typography-lab__level-tabs" aria-label={t('Nivel tipográfico', 'Typography level')}>
           {(Object.keys(typographyLabels) as TypographyLevel[]).map(level => (
             <button key={level} type="button" aria-pressed={selectedLevel === level} onClick={() => setSelectedLevel(level)}>
-              {typographyLabels[level]}
+              {t(...typographyLabels[level])}
             </button>
           ))}
         </nav>
         <fieldset>
-            <legend>{typographyLabels[selectedLevel]}</legend>
+            <legend>{t(...typographyLabels[selectedLevel])}</legend>
             <label>
-              <span>Familia</span>
+              <span>{t('Familia', 'Family')}</span>
               <select
                 value={value[selectedLevel].family}
                 onChange={event => update(selectedLevel, { family: event.target.value })}
@@ -349,7 +354,7 @@ function TypographyLab({
               </select>
             </label>
             <label>
-              <span>Peso</span>
+              <span>{t('Peso', 'Weight')}</span>
               <select
                 value={value[selectedLevel].weight}
                 onChange={event => update(selectedLevel, { weight: Number(event.target.value) })}
@@ -358,7 +363,7 @@ function TypographyLab({
               </select>
             </label>
             <label>
-              <span>Tamaño · px</span>
+              <span>{t('Tamaño · px', 'Size · px')}</span>
               <LabNumberInput
                 min={fontSizeRanges[selectedLevel].min}
                 max={fontSizeRanges[selectedLevel].max}
@@ -368,7 +373,7 @@ function TypographyLab({
               />
             </label>
             <label>
-              <span>Interlineado</span>
+              <span>{t('Interlineado', 'Line height')}</span>
               <LabNumberInput
                 min={0.75}
                 max={2}
@@ -388,7 +393,7 @@ function TypographyLab({
               />
             </label>
             <label>
-              <span>Margen superior · px</span>
+              <span>{t('Margen superior · px', 'Top margin · px')}</span>
               <LabNumberInput
                 min={0}
                 max={48}
@@ -398,7 +403,7 @@ function TypographyLab({
               />
             </label>
             <label>
-              <span>Margen inferior · px</span>
+              <span>{t('Margen inferior · px', 'Bottom margin · px')}</span>
               <LabNumberInput
                 min={0}
                 max={48}
@@ -451,6 +456,7 @@ function ShadowLab({
   readonly value: ShadowSettings;
   readonly onChange: (value: ShadowSettings) => void;
 }) {
+  const t = useStudioText();
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
   const updateBox = (
     kind: 'solid' | 'glass',
@@ -486,23 +492,23 @@ function ShadowLab({
     <ShadowRange label="X" value={value[kind].x} min={-24} max={24} onChange={x => updateBox(kind, { x })} />
     <ShadowRange label="Y" value={value[kind].y} min={-12} max={60} onChange={y => updateBox(kind, { y })} />
     <ShadowRange label="Blur" value={value[kind].blur} min={0} max={100} onChange={blur => updateBox(kind, { blur })} />
-    <ShadowRange label="Expansión" value={value[kind].spread} min={-24} max={40} onChange={spread => updateBox(kind, { spread })} />
-    <ShadowRange label="Opacidad" value={value[kind].opacity} min={0} max={60} unit="%" onChange={opacity => updateBox(kind, { opacity })} />
+    <ShadowRange label={t('Expansión', 'Spread')} value={value[kind].spread} min={-24} max={40} onChange={spread => updateBox(kind, { spread })} />
+    <ShadowRange label={t('Opacidad', 'Opacity')} value={value[kind].opacity} min={0} max={60} unit="%" onChange={opacity => updateBox(kind, { opacity })} />
   </>;
   return <details className="shadow-lab">
-    <summary><span>Sombras</span><b>Negro · configuración detallada</b></summary>
+    <summary><span>{t('Sombras', 'Shadows')}</span><b>{t('Negro · configuración detallada', 'Black · detailed configuration')}</b></summary>
     <div className="shadow-lab__content">
-      <fieldset><legend>Panel sólido</legend>{boxControls('solid')}</fieldset>
+      <fieldset><legend>{t('Panel sólido', 'Solid panel')}</legend>{boxControls('solid')}</fieldset>
       <fieldset><legend>Panel Glass</legend>{boxControls('glass')}</fieldset>
-      <fieldset><legend>Texto sobre Glass</legend>
+      <fieldset><legend>{t('Texto sobre Glass', 'Text over Glass')}</legend>
         <ShadowRange label="X" value={value.text.x} min={-8} max={8} onChange={x => updateText({ x })} />
         <ShadowRange label="Y" value={value.text.y} min={-8} max={12} onChange={y => updateText({ y })} />
         <ShadowRange label="Blur" value={value.text.blur} min={0} max={24} onChange={blur => updateText({ blur })} />
-        <ShadowRange label="Opacidad" value={value.text.opacity} min={0} max={100} unit="%" onChange={opacity => updateText({ opacity })} />
+        <ShadowRange label={t('Opacidad', 'Opacity')} value={value.text.opacity} min={0} max={100} unit="%" onChange={opacity => updateText({ opacity })} />
       </fieldset>
       <div className="shadow-lab__actions">
-        <button type="button" onClick={() => onChange(defaultShadows)}>Restablecer</button>
-        <button type="button" onClick={() => void copySettings()}>{copyState === 'copied' ? 'Sombras copiadas' : copyState === 'error' ? 'No se pudo copiar' : 'Copiar sombras'}</button>
+        <button type="button" onClick={() => onChange(defaultShadows)}>{t('Restablecer', 'Reset')}</button>
+        <button type="button" onClick={() => void copySettings()}>{copyState === 'copied' ? t('Sombras copiadas', 'Shadows copied') : copyState === 'error' ? t('No se pudo copiar', 'Could not copy') : t('Copiar sombras', 'Copy shadows')}</button>
       </div>
     </div>
   </details>;
@@ -543,6 +549,7 @@ function GlassLab({
   readonly value: GlassSettings;
   readonly onChange: (value: GlassSettings) => void;
 }) {
+  const t = useStudioText();
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
   const copySettings = async () => {
     const css = [
@@ -567,25 +574,25 @@ function GlassLab({
     }
   };
   return <details className="glass-lab">
-    <summary><span>Superficie Glass</span><b>Gradiente {value.opacityStart}% → {value.opacityEnd}% · blur {value.backdropBlur}px · borde {value.borderWidth}px · texto {value.textStrokeWidth}px</b></summary>
+    <summary><span>{t('Superficie Glass', 'Glass surface')}</span><b>{t('Gradiente', 'Gradient')} {value.opacityStart}% → {value.opacityEnd}% · blur {value.backdropBlur}px · {t('borde', 'border')} {value.borderWidth}px · {t('texto', 'text')} {value.textStrokeWidth}px</b></summary>
     <div className="glass-lab__content">
       <fieldset>
-        <legend>Fondo degradado</legend>
-        <GlassColorControl label="Color inicial" value={value.colorStart} onChange={colorStart => onChange(Object.freeze({ ...value, colorStart }))} />
-        <ShadowRange label="Opacidad inicial" value={value.opacityStart} min={0} max={100} unit="%" onChange={opacityStart => onChange(Object.freeze({ ...value, opacityStart }))} />
-        <GlassColorControl label="Color final" value={value.colorEnd} onChange={colorEnd => onChange(Object.freeze({ ...value, colorEnd }))} />
-        <ShadowRange label="Opacidad final" value={value.opacityEnd} min={0} max={100} unit="%" onChange={opacityEnd => onChange(Object.freeze({ ...value, opacityEnd }))} />
-        <ShadowRange label="Ángulo" value={value.gradientAngle} min={0} max={360} unit="°" onChange={gradientAngle => onChange(Object.freeze({ ...value, gradientAngle }))} />
-        <ShadowRange label="Blur del fondo" value={value.backdropBlur} min={0} max={16} onChange={backdropBlur => onChange(Object.freeze({ ...value, backdropBlur }))} />
+        <legend>{t('Fondo degradado', 'Gradient background')}</legend>
+        <GlassColorControl label={t('Color inicial', 'Start color')} value={value.colorStart} onChange={colorStart => onChange(Object.freeze({ ...value, colorStart }))} />
+        <ShadowRange label={t('Opacidad inicial', 'Start opacity')} value={value.opacityStart} min={0} max={100} unit="%" onChange={opacityStart => onChange(Object.freeze({ ...value, opacityStart }))} />
+        <GlassColorControl label={t('Color final', 'End color')} value={value.colorEnd} onChange={colorEnd => onChange(Object.freeze({ ...value, colorEnd }))} />
+        <ShadowRange label={t('Opacidad final', 'End opacity')} value={value.opacityEnd} min={0} max={100} unit="%" onChange={opacityEnd => onChange(Object.freeze({ ...value, opacityEnd }))} />
+        <ShadowRange label={t('Ángulo', 'Angle')} value={value.gradientAngle} min={0} max={360} unit="°" onChange={gradientAngle => onChange(Object.freeze({ ...value, gradientAngle }))} />
+        <ShadowRange label={t('Blur del fondo', 'Background blur')} value={value.backdropBlur} min={0} max={16} onChange={backdropBlur => onChange(Object.freeze({ ...value, backdropBlur }))} />
       </fieldset>
       <fieldset>
-        <legend>Bordes de panel y tipografía</legend>
-        <GlassColorControl label="Panel · color" value={value.borderColor} onChange={borderColor => onChange(Object.freeze({ ...value, borderColor }))} />
-        <ShadowRange label="Panel · opacidad" value={value.borderOpacity} min={0} max={100} unit="%" onChange={borderOpacity => onChange(Object.freeze({ ...value, borderOpacity }))} />
-        <ShadowRange label="Panel · grosor" value={value.borderWidth} min={0} max={6} step={0.25} onChange={borderWidth => onChange(Object.freeze({ ...value, borderWidth }))} />
-        <GlassColorControl label="Texto · color" value={value.textStrokeColor} onChange={textStrokeColor => onChange(Object.freeze({ ...value, textStrokeColor }))} />
-        <ShadowRange label="Texto · opacidad" value={value.textStrokeOpacity} min={0} max={100} unit="%" onChange={textStrokeOpacity => onChange(Object.freeze({ ...value, textStrokeOpacity }))} />
-        <ShadowRange label="Texto · grosor" value={value.textStrokeWidth} min={0} max={2} step={0.05} onChange={textStrokeWidth => onChange(Object.freeze({ ...value, textStrokeWidth }))} />
+        <legend>{t('Bordes de panel y tipografía', 'Panel and typography borders')}</legend>
+        <GlassColorControl label={t('Panel · color', 'Panel · color')} value={value.borderColor} onChange={borderColor => onChange(Object.freeze({ ...value, borderColor }))} />
+        <ShadowRange label={t('Panel · opacidad', 'Panel · opacity')} value={value.borderOpacity} min={0} max={100} unit="%" onChange={borderOpacity => onChange(Object.freeze({ ...value, borderOpacity }))} />
+        <ShadowRange label={t('Panel · grosor', 'Panel · width')} value={value.borderWidth} min={0} max={6} step={0.25} onChange={borderWidth => onChange(Object.freeze({ ...value, borderWidth }))} />
+        <GlassColorControl label={t('Texto · color', 'Text · color')} value={value.textStrokeColor} onChange={textStrokeColor => onChange(Object.freeze({ ...value, textStrokeColor }))} />
+        <ShadowRange label={t('Texto · opacidad', 'Text · opacity')} value={value.textStrokeOpacity} min={0} max={100} unit="%" onChange={textStrokeOpacity => onChange(Object.freeze({ ...value, textStrokeOpacity }))} />
+        <ShadowRange label={t('Texto · grosor', 'Text · width')} value={value.textStrokeWidth} min={0} max={2} step={0.05} onChange={textStrokeWidth => onChange(Object.freeze({ ...value, textStrokeWidth }))} />
       </fieldset>
       <div
         className="glass-lab__sample"
@@ -596,11 +603,11 @@ function GlassLab({
           backdropFilter: `blur(${value.backdropBlur}px)`,
           WebkitTextStroke: `${value.textStrokeWidth}px ${colorWithOpacity(value.textStrokeColor, value.textStrokeOpacity)}`,
         }}
-        aria-label="Muestra del relleno Glass"
+        aria-label={t('Muestra del relleno Glass', 'Glass fill sample')}
       ><span>Aa</span><b>278</b></div>
       <div className="glass-lab__actions">
-        <button type="button" onClick={() => onChange(defaultGlass)}>Restablecer</button>
-        <button type="button" onClick={() => void copySettings()}>{copyState === 'copied' ? 'Token copiado' : copyState === 'error' ? 'No se pudo copiar' : 'Copiar token'}</button>
+        <button type="button" onClick={() => onChange(defaultGlass)}>{t('Restablecer', 'Reset')}</button>
+        <button type="button" onClick={() => void copySettings()}>{copyState === 'copied' ? t('Token copiado', 'Token copied') : copyState === 'error' ? t('No se pudo copiar', 'Could not copy') : t('Copiar token', 'Copy token')}</button>
       </div>
     </div>
   </details>;
@@ -625,6 +632,7 @@ function PaletteLab({
   readonly value: PaletteSettings;
   readonly onChange: (value: PaletteSettings) => void;
 }) {
+  const t = useStudioText();
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
   const update = (role: PaletteRole, color: string) => onChange(Object.freeze({ ...value, [role]: color }));
   const copySettings = async () => {
@@ -647,7 +655,7 @@ function PaletteLab({
     }
   };
   return <details className="palette-lab">
-    <summary><span>Paleta semántica</span><b>Automotriz · accesible</b></summary>
+    <summary><span>{t('Paleta semántica', 'Semantic palette')}</span><b>{t('Automotriz · accesible', 'Automotive · accessible')}</b></summary>
     <div className="palette-lab__content">
       {(Object.keys(paletteLabels) as PaletteRole[]).map(role => {
         const contrast = contrastAgainstWhite(value[role]);
@@ -656,16 +664,16 @@ function PaletteLab({
           key={role}
           style={{ background: value[role], color: readableTextColor(value[role]) }}
         >
-          <span>{paletteLabels[role][0]}</span>
-          <strong>{paletteLabels[role][1]}</strong>
-          <input type="color" value={value[role]} onChange={event => update(role, event.target.value)} aria-label={`Color ${paletteLabels[role][0]}`} />
+          <span>{t(paletteLabels[role][0][0], paletteLabels[role][0][1])}</span>
+          <strong>{t(paletteLabels[role][1][0], paletteLabels[role][1][1])}</strong>
+          <input type="color" value={value[role]} onChange={event => update(role, event.target.value)} aria-label={`${t('Color', 'Color')} ${t(paletteLabels[role][0][0], paletteLabels[role][0][1])}`} />
           <b>{value[role]}</b>
-          <small>{contrast.toFixed(2)}:1 sobre blanco · {contrast >= 4.5 ? 'AA' : 'contraste bajo'}</small>
+          <small>{contrast.toFixed(2)}:1 {t('sobre blanco', 'on white')} · {contrast >= 4.5 ? 'AA' : t('contraste bajo', 'low contrast')}</small>
         </label>;
       })}
       <div className="palette-lab__actions">
-        <button type="button" onClick={() => onChange(defaultPalette)}>Restablecer</button>
-        <button type="button" onClick={() => void copySettings()}>{copyState === 'copied' ? 'Paleta copiada' : copyState === 'error' ? 'No se pudo copiar' : 'Copiar paleta'}</button>
+        <button type="button" onClick={() => onChange(defaultPalette)}>{t('Restablecer', 'Reset')}</button>
+        <button type="button" onClick={() => void copySettings()}>{copyState === 'copied' ? t('Paleta copiada', 'Palette copied') : copyState === 'error' ? t('No se pudo copiar', 'Could not copy') : t('Copiar paleta', 'Copy palette')}</button>
       </div>
     </div>
   </details>;
@@ -687,24 +695,28 @@ const telemetry: ApexEtherTelemetry = Object.freeze({
 const leaders = Object.freeze([
   { name: 'J. Villaverde', gap: 'Líder', active: true }, { name: 'M. Anderson', gap: '+1.250' }, { name: 'L. Martínez', gap: '+2.463' }, { name: 'A. Wilson', gap: '+3.820' }, { name: 'R. Thompson', gap: '+4.256' },
 ]);
-const objectives = Object.freeze([
-  { label: 'Completa el podio', complete: true }, { label: 'Mantén el ritmo objetivo', progress: '02:14' }, { label: 'Recupera energía en frenada', progress: '68%' },
-]);
-
 function Frame({ title, subtitle, mode, background, children }: { title: string; subtitle: string; mode: ApexEtherSurfaceMode; background: 'mountain' | 'night'; children: ReactNode }) {
+  const t = useStudioText();
   return <article className="catalog-frame" data-mode={mode} style={{ '--catalog-image': `url("${catalogBackgrounds[background]}")` } as CSSProperties}>
-    <header><div><span>{subtitle}</span><h2>{title}</h2></div><b>{mode === 'glass' ? 'VIDRIO CLARO' : 'BLANCO OPACO'}</b></header>
+    <header><div><span>{subtitle}</span><h2>{title}</h2></div><b>{mode === 'glass' ? t('VIDRIO CLARO', 'CLEAR GLASS') : t('BLANCO OPACO', 'OPAQUE WHITE')}</b></header>
     <div className="catalog-frame__scene" data-mode={mode}>{children}</div>
   </article>;
 }
 
 function RaceBroadcast({ mode }: { mode: ApexEtherSurfaceMode }) {
+  const t = useStudioText();
+  const localizedLeaders = leaders.map(entry => entry.active ? { ...entry, gap: t('Líder', 'Leader') } : entry);
+  const localizedObjectives = [
+    { label: t('Completa el podio', 'Finish on the podium'), complete: true },
+    { label: t('Mantén el ritmo objetivo', 'Maintain target pace'), progress: '02:14' },
+    { label: t('Recupera energía en frenada', 'Recover energy under braking'), progress: '68%' },
+  ];
   return <div className="hud-layout hud-layout--broadcast">
-    <div className="hud-layout__identity" data-mode={mode}><span>{telemetry.session.mode}</span><strong>{telemetry.session.trackName}</strong><em>{telemetry.session.weather}</em></div>
+    <div className="hud-layout__identity" data-mode={mode}><span>{t('Práctica cronometrada', 'Timed practice')}</span><strong>{telemetry.session.trackName}</strong><em>{t('Claro · 18°', 'Clear · 18°')}</em></div>
     <ApexEtherPosition race={telemetry.race} mode={mode} />
     <ApexEtherRaceClock race={telemetry.race} mode={mode} />
-    <ApexEtherLeaderboard entries={leaders} mode={mode} />
-    <ApexEtherObjectives items={objectives} mode={mode} />
+    <ApexEtherLeaderboard entries={localizedLeaders} mode={mode} />
+    <ApexEtherObjectives items={localizedObjectives} mode={mode} />
     <ApexEtherRoute points={telemetry.route} mode={mode} />
     <ApexEtherSpeed motion={telemetry.motion} mode={mode} />
   </div>;
@@ -720,66 +732,79 @@ function TrackAttack({ mode }: { mode: ApexEtherSurfaceMode }) {
 }
 
 function CarCare({ mode }: { mode: ApexEtherSurfaceMode }) {
+  const t = useStudioText();
   return <div className="hud-layout hud-layout--care">
     <ApexEtherWheelHealth wheels={telemetry.wheels} mode={mode} />
     <ApexEtherInput motion={telemetry.motion} mode={mode} />
-    <ApexEtherSurface title="Tren motriz" eyebrow="Estado en vivo" mode={mode} className="catalog-drivetrain"><ApexEtherMetric label="Potencia" value="742" unit="CV" /><ApexEtherMetric label="Par" value="800" unit="Nm" /><ApexEtherMetric label="Aceite" value="94" unit="°C" tone="positive" /><ApexEtherMetric label="Batería" value="68" unit="%" tone="info" detail="Recuperación activa" /></ApexEtherSurface>
-    <ApexEtherSurface title="Asistencias" mode={mode} className="catalog-assists"><div data-tone="positive"><b>ABS</b><strong>Activo</strong></div><div data-tone="emphasis"><b>Tracción</b><strong>Sport</strong></div><div data-tone="info"><b>Estabilidad</b><strong>Dinámico</strong></div></ApexEtherSurface>
+    <ApexEtherSurface title={t('Tren motriz', 'Powertrain')} eyebrow={t('Estado en vivo', 'Live status')} mode={mode} className="catalog-drivetrain"><ApexEtherMetric label={t('Potencia', 'Power')} value="742" unit={t('CV', 'hp')} /><ApexEtherMetric label={t('Par', 'Torque')} value="800" unit="Nm" /><ApexEtherMetric label={t('Aceite', 'Oil')} value="94" unit="°C" tone="positive" /><ApexEtherMetric label={t('Batería', 'Battery')} value="68" unit="%" tone="info" detail={t('Recuperación activa', 'Active recovery')} /></ApexEtherSurface>
+    <ApexEtherSurface title={t('Asistencias', 'Assists')} mode={mode} className="catalog-assists"><div data-tone="positive"><b>ABS</b><strong>{t('Activo', 'Active')}</strong></div><div data-tone="emphasis"><b>{t('Tracción', 'Traction')}</b><strong>Sport</strong></div><div data-tone="info"><b>{t('Estabilidad', 'Stability')}</b><strong>{t('Dinámico', 'Dynamic')}</strong></div></ApexEtherSurface>
   </div>;
 }
 
 function SessionBrief({ mode }: { mode: ApexEtherSurfaceMode }) {
+  const t = useStudioText();
   return <div className="hud-layout hud-layout--brief">
-    <ApexEtherSurface title="Sesión" eyebrow="Antes de conducir" mode={mode} className="catalog-session"><ApexEtherMetric label="Circuito" value={telemetry.session.trackName} detail="5,8 km · 18 curvas" variant="hero" /><ApexEtherMetric label="Vehículo" value={telemetry.session.vehicleName} detail="Tracción trasera · Sport+" variant="hero" /><ApexEtherMetric label="Condición" value={telemetry.session.condition} detail={telemetry.session.weather} variant="hero" /></ApexEtherSurface>
-    <ApexEtherObjectives items={objectives} mode={mode} />
-    <ApexEtherSurface title="Cámara" mode={mode} className="catalog-camera"><div><b>Exterior dinámica</b><span>FOV 74° · seguimiento suave</span></div><button type="button">Cambiar vista</button></ApexEtherSurface>
+    <ApexEtherSurface title={t('Sesión', 'Session')} eyebrow={t('Antes de conducir', 'Before driving')} mode={mode} className="catalog-session"><ApexEtherMetric label={t('Circuito', 'Circuit')} value={telemetry.session.trackName} detail={t('5,8 km · 18 curvas', '5.8 km · 18 turns')} variant="hero" /><ApexEtherMetric label={t('Vehículo', 'Vehicle')} value={telemetry.session.vehicleName} detail={t('Tracción trasera · Sport+', 'Rear-wheel drive · Sport+')} variant="hero" /><ApexEtherMetric label={t('Condición', 'Condition')} value={t('Asfalto seco', 'Dry asphalt')} detail={t('Claro · 18°', 'Clear · 18°')} variant="hero" /></ApexEtherSurface>
+    <ApexEtherObjectives items={[{ label: t('Completa el podio', 'Finish on the podium'), complete: true }, { label: t('Mantén el ritmo objetivo', 'Maintain target pace'), progress: '02:14' }, { label: t('Recupera energía en frenada', 'Recover energy under braking'), progress: '68%' }]} mode={mode} />
+    <ApexEtherSurface title={t('Cámara', 'Camera')} mode={mode} className="catalog-camera"><div><b>{t('Exterior dinámica', 'Dynamic exterior')}</b><span>{t('FOV 74° · seguimiento suave', 'FOV 74° · smooth tracking')}</span></div><button type="button">{t('Cambiar vista', 'Change view')}</button></ApexEtherSurface>
   </div>;
 }
 
 function Library() {
+  const t = useStudioText();
   const metrics = [
-    ['Rendimiento', 'Potencia, par, rpm, velocidad máxima, 0–100, consumo, autonomía'],
-    ['Carrera', 'Posición, vueltas, sectores, delta, clasificación, objetivos, sanciones'],
-    ['Vehículo', 'Neumáticos, cargas, temperatura, presión, desgaste, daños, fluidos'],
-    ['Navegación', 'Ruta, siguiente curva, distancia, punto de frenada, minimapa, brújula'],
-    ['Sesión', 'Pista, clima, hora, cámara, modo, dificultad, tráfico, replay'],
-    ['Conducción', 'Acelerador, freno, dirección, marcha, asistencias, energía, boost'],
+    [t('Rendimiento', 'Performance'), t('Potencia, par, rpm, velocidad máxima, 0–100, consumo, autonomía', 'Power, torque, rpm, top speed, 0–100, consumption, range')],
+    [t('Carrera', 'Race'), t('Posición, vueltas, sectores, delta, clasificación, objetivos, sanciones', 'Position, laps, sectors, delta, standings, objectives, penalties')],
+    [t('Vehículo', 'Vehicle'), t('Neumáticos, cargas, temperatura, presión, desgaste, daños, fluidos', 'Tires, loads, temperature, pressure, wear, damage, fluids')],
+    [t('Navegación', 'Navigation'), t('Ruta, siguiente curva, distancia, punto de frenada, minimapa, brújula', 'Route, next turn, distance, braking point, minimap, compass')],
+    [t('Sesión', 'Session'), t('Pista, clima, hora, cámara, modo, dificultad, tráfico, replay', 'Track, weather, time, camera, mode, difficulty, traffic, replay')],
+    [t('Conducción', 'Driving'), t('Acelerador, freno, dirección, marcha, asistencias, energía, boost', 'Throttle, brake, steering, gear, assists, energy, boost')],
   ];
-  return <section className="catalog-library"><header><span>Sistema modular</span><h2>Catálogo de información</h2><p>Las métricas se organizan por decisión del conductor. Cada bloque puede vivir solo, en overlay o dentro de una superficie de vidrio claro u opaca.</p></header><div>{metrics.map(([title, text], index) => <article key={title}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div></section>;
+  return <section className="catalog-library"><header><span>{t('Sistema modular', 'Modular system')}</span><h2>{t('Catálogo de información', 'Information catalog')}</h2><p>{t('Las métricas se organizan por decisión del conductor. Cada bloque puede vivir solo, en overlay o dentro de una superficie de vidrio claro u opaca.', 'Metrics are organized around driver decisions. Each block can stand alone, appear as an overlay, or live inside a clear-glass or opaque surface.')}</p></header><div>{metrics.map(([title, text], index) => <article key={title}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div></section>;
 }
 
 function Motivation() {
+  const t = useStudioText();
   const principles = [
-    ['Frontera independiente', 'La aplicación anfitriona decide qué mostrar. Ether lo representa con una jerarquía consistente, un costo de render acotado y sin añadir latencia perceptible. Ningún panel necesita conocer el motor físico, la escena o el ciclo de juego.'],
-    ['Jerarquía antes que volumen', 'La información se organiza por decisiones del conductor. Cada composición muestra lo necesario para carrera, estrategia, diagnóstico o aprendizaje.'],
-    ['Costo de render predecible', 'Los datos se publican por segmentos y cada panel escucha únicamente su porción. La frecuencia de la simulación no obliga a redibujar toda la interfaz.'],
+    [t('Frontera independiente', 'Independent boundary'), t('La aplicación anfitriona decide qué mostrar. Ether lo representa con una jerarquía consistente, un costo de render acotado y sin añadir latencia perceptible. Ningún panel necesita conocer el motor físico, la escena o el ciclo de juego.', 'The host application decides what to show. Ether renders it with consistent hierarchy, bounded rendering cost and no perceptible added latency. No panel needs to know the physics engine, scene or game loop.')],
+    [t('Jerarquía antes que volumen', 'Hierarchy before volume'), t('La información se organiza por decisiones del conductor. Cada composición muestra lo necesario para carrera, estrategia, diagnóstico o aprendizaje.', 'Information is organized around driver decisions. Each composition shows what is needed for racing, strategy, diagnostics or learning.')],
+    [t('Costo de render predecible', 'Predictable rendering cost'), t('Los datos se publican por segmentos y cada panel escucha únicamente su porción. La frecuencia de la simulación no obliga a redibujar toda la interfaz.', 'Data is published by segment and each panel listens only to its own slice. Simulation frequency does not force the entire interface to redraw.')],
   ] as const;
   return <section className="catalog-motivation" id="motivation">
-    <header><span>Motivación</span><h2>La telemetría es compleja.<br />La lectura no debería serlo.</h2><p>Una simulación puede producir cientos de miles de señales por segundo. El conductor sólo necesita las decisivas, presentadas en el instante correcto. Apex Ether transforma ese flujo en componentes legibles, configurables y desacoplados.</p></header>
+    <header><span>{t('Motivación', 'Motivation')}</span><h2>{t('La telemetría es compleja.', 'Telemetry is complex.')}<br />{t('La lectura no debería serlo.', 'Reading it should not be.')}</h2><p>{t('Una simulación puede producir cientos de miles de señales por segundo. El conductor sólo necesita las decisivas, presentadas en el instante correcto. Apex Ether transforma ese flujo en componentes legibles, configurables y desacoplados.', 'A simulation can produce hundreds of thousands of signals per second. The driver only needs the decisive ones, presented at the right moment. Apex Ether turns that flow into readable, configurable and decoupled components.')}</p></header>
     <div>{principles.map(([title, text], index) => <article key={title}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div>
   </section>;
 }
 
 function Ecosystem() {
+  const t = useStudioText();
   return <section className="catalog-ecosystem" id="ecosystem">
-    <header><span>Integración con Apex</span><h2>Una frontera clara entre datos y experiencia</h2><p>Apex Ether recibe contratos de telemetría estables y devuelve componentes React. El resto del ecosistema conserva sus responsabilidades.</p></header>
-    <div className="catalog-ecosystem__flow" aria-label="Flujo de integración de Apex Ether">
-      <article><span>Fuentes</span><strong>Apex Physics<br />Estado de carrera</strong><p>Movimiento, controles, neumáticos, carrera, ruta y sesión.</p></article>
+    <header><span>{t('Integración con Apex', 'Integration with Apex')}</span><h2>{t('Una frontera clara entre datos y experiencia', 'A clear boundary between data and experience')}</h2><p>{t('Apex Ether recibe contratos de telemetría estables y devuelve componentes React. El resto del ecosistema conserva sus responsabilidades.', 'Apex Ether receives stable telemetry contracts and returns React components. The rest of the ecosystem keeps its responsibilities.')}</p></header>
+    <div className="catalog-ecosystem__flow" aria-label={t('Flujo de integración de Apex Ether', 'Apex Ether integration flow')}>
+      <article><span>{t('Fuentes', 'Sources')}</span><strong>Apex Physics<br />{t('Estado de carrera', 'Race state')}</strong><p>{t('Movimiento, controles, neumáticos, carrera, ruta y sesión.', 'Motion, controls, tires, race, route and session.')}</p></article>
       <i aria-hidden="true">→</i>
-      <article><span>Frontera del host</span><strong>Adaptador de Apex Drive</strong><p>Normaliza unidades y publica únicamente los segmentos modificados.</p></article>
+      <article><span>{t('Frontera del host', 'Host boundary')}</span><strong>{t('Adaptador de Apex Drive', 'Apex Drive adapter')}</strong><p>{t('Normaliza unidades y publica únicamente los segmentos modificados.', 'Normalizes units and publishes only changed segments.')}</p></article>
       <i aria-hidden="true">→</i>
-      <article data-primary><span>Sistema visual</span><strong>@jvsysarch/apex-ether</strong><p>Paneles, tokens, modos de superficie y suscripciones selectivas.</p></article>
+      <article data-primary><span>{t('Sistema visual', 'Visual system')}</span><strong>@jvsysarch/apex-ether</strong><p>{t('Paneles, tokens, modos de superficie y suscripciones selectivas.', 'Panels, tokens, surface modes and selective subscriptions.')}</p></article>
       <i aria-hidden="true">→</i>
-      <article><span>Aplicaciones</span><strong>HUD de Apex Drive<br />Ether Studio</strong><p>Experiencia integrada, catálogo, Lab y futuras composiciones.</p></article>
+      <article><span>{t('Aplicaciones', 'Applications')}</span><strong>{t('HUD de Apex Drive', 'Apex Drive HUD')}<br />Ether Studio</strong><p>{t('Experiencia integrada, catálogo, Lab y futuras composiciones.', 'Integrated experience, catalog, Lab and future compositions.')}</p></article>
     </div>
   </section>;
 }
 
 function Performance() {
-  return <section className="catalog-performance"><span>Presupuesto de rendimiento</span><h2>Lectura clara y actualización estable</h2><div><article><b>01</b><h3>Datos segmentados</h3><p>Movimiento, carrera, ruta y vehículo se publican por separado. Cada panel recibe únicamente la información que necesita.</p></article><article><b>02</b><h3>Composición por demanda</h3><p>Se montan únicamente los paneles elegidos. Las rutas y los gráficos trabajan cuando están visibles.</p></article><article><b>03</b><h3>Superficie liviana</h3><p>El vidrio utiliza una capa semitransparente y el desenfoque se regula según el presupuesto visual disponible.</p></article><article><b>04</b><h3>Números estables</h3><p>Tipografía tabular, estructura compacta y transformaciones aisladas mantienen fluidos los datos de alta frecuencia.</p></article></div></section>;
+  const t = useStudioText();
+  return <section className="catalog-performance"><span>{t('Presupuesto de rendimiento', 'Performance budget')}</span><h2>{t('Lectura clara y actualización estable', 'Clear reading and stable updates')}</h2><div><article><b>01</b><h3>{t('Datos segmentados', 'Segmented data')}</h3><p>{t('Movimiento, carrera, ruta y vehículo se publican por separado. Cada panel recibe únicamente la información que necesita.', 'Motion, race, route and vehicle data are published separately. Each panel receives only the information it needs.')}</p></article><article><b>02</b><h3>{t('Composición por demanda', 'On-demand composition')}</h3><p>{t('Se montan únicamente los paneles elegidos. Las rutas y los gráficos trabajan cuando están visibles.', 'Only selected panels are mounted. Routes and charts work only while visible.')}</p></article><article><b>03</b><h3>{t('Superficie liviana', 'Lightweight surface')}</h3><p>{t('El vidrio utiliza una capa semitransparente y el desenfoque se regula según el presupuesto visual disponible.', 'Glass uses a translucent layer and blur is adjusted to the available visual budget.')}</p></article><article><b>04</b><h3>{t('Números estables', 'Stable figures')}</h3><p>{t('Tipografía tabular, estructura compacta y transformaciones aisladas mantienen fluidos los datos de alta frecuencia.', 'Tabular figures, compact structure and isolated transforms keep high-frequency data fluid.')}</p></article></div></section>;
 }
 
-export function ApexEtherStudio() {
+function ApexEtherStudioContent({
+  locale,
+  onLocaleChange,
+}: {
+  readonly locale: ApexEtherLocale;
+  readonly onLocaleChange: (locale: ApexEtherLocale) => void;
+}) {
+  const t = useStudioText();
   const [typography, setTypography] = useState(defaultTypography);
   const [palette, setPalette] = useState(defaultPalette);
   const [shadows, setShadows] = useState(defaultShadows);
@@ -856,9 +881,10 @@ export function ApexEtherStudio() {
   const isLabRoute = window.location.pathname.replace(/\/+$/, '').endsWith('/lab');
   const labEnabled = isLabRoute || query.get('lab') === 'true';
   if (query.get('view') === 'expanded') {
-    return <main className="catalog-shell" style={typographyStyle}><ExpandedCatalog /></main>;
+    return <main className="catalog-shell" style={typographyStyle}><LanguageSwitcher locale={locale} onChange={onLocaleChange} /><ExpandedCatalog /></main>;
   }
   return <main className="catalog-shell" style={typographyStyle}>
+    <LanguageSwitcher locale={locale} onChange={onLocaleChange} />
     {labEnabled ? <div className="catalog-controls">
       <TypographyLab value={typography} onChange={setTypography} />
       <PaletteLab value={palette} onChange={setPalette} />
@@ -866,18 +892,18 @@ export function ApexEtherStudio() {
       <GlassLab value={glass} onChange={setGlass} />
     </div> : null}
     <section className="catalog-hero">
-      <p>Apex Ether · sistema de telemetría</p>
-      <h1>Información inmediata.<br /><i>Espacio para decidir.</i></h1>
-      <p className="catalog-hero__lede">Telemetría clara para superficies amplias, con capas que acompañan la conducción sin ocultarla.</p>
+      <p>{t('Apex Ether · sistema de telemetría', 'Apex Ether · telemetry system')}</p>
+      <h1>{t('Información inmediata.', 'Immediate information.')}<br /><i>{t('Espacio para decidir.', 'Room to decide.')}</i></h1>
+      <p className="catalog-hero__lede">{t('Telemetría clara para superficies amplias, con capas que acompañan la conducción sin ocultarla.', 'Clear telemetry for large displays, with layers that support driving without obscuring it.')}</p>
       <div>
-        <span>Lectura rápida</span>
-        <span>Opaco o vidrio transparente</span>
-        <span>Render selectivo de alto rendimiento</span>
+        <span>{t('Lectura rápida', 'Fast reading')}</span>
+        <span>{t('Opaco o vidrio transparente', 'Opaque or transparent glass')}</span>
+        <span>{t('Render selectivo de alto rendimiento', 'High-performance selective rendering')}</span>
       </div>
     </section>
-    <section className="catalog-intro"><p>Una familia de interfaces de conducción, carrera y diagnóstico. No es una sola pantalla recargada: cada composición responde a un momento de uso y puede elegir sus propios paneles.</p></section>
+    <section className="catalog-intro"><p>{t('Una familia de interfaces de conducción, carrera y diagnóstico. No es una sola pantalla recargada: cada composición responde a un momento de uso y puede elegir sus propios paneles.', 'A family of driving, racing and diagnostic interfaces. It is not one overloaded screen: each composition serves a moment of use and can select its own panels.')}</p></section>
     <Motivation />
-    <section className="catalog-frames"><Frame title="Carrera en vivo" subtitle="Composición completa · información periférica" mode="glass" background="mountain"><RaceBroadcast mode="glass" /></Frame><Frame title="Ataque de vuelta" subtitle="Foco absoluto · feedback inmediato" mode="glass" background="night"><TrackAttack mode="glass" /></Frame><Frame title="Estado del vehículo" subtitle="Diagnóstico claro · datos comparables" mode="solid" background="mountain"><CarCare mode="solid" /></Frame><Frame title="Brief de sesión" subtitle="Configuración · objetivos y contexto" mode="solid" background="night"><SessionBrief mode="solid" /></Frame></section>
+    <section className="catalog-frames"><Frame title={t('Carrera en vivo', 'Live race')} subtitle={t('Composición completa · información periférica', 'Complete composition · peripheral information')} mode="glass" background="mountain"><RaceBroadcast mode="glass" /></Frame><Frame title={t('Ataque de vuelta', 'Lap attack')} subtitle={t('Foco absoluto · feedback inmediato', 'Absolute focus · immediate feedback')} mode="glass" background="night"><TrackAttack mode="glass" /></Frame><Frame title={t('Estado del vehículo', 'Vehicle status')} subtitle={t('Diagnóstico claro · datos comparables', 'Clear diagnostics · comparable data')} mode="solid" background="mountain"><CarCare mode="solid" /></Frame><Frame title={t('Brief de sesión', 'Session brief')} subtitle={t('Configuración · objetivos y contexto', 'Setup · objectives and context')} mode="solid" background="night"><SessionBrief mode="solid" /></Frame></section>
     <ExpandedCatalog />
     <Ecosystem />
     <Library /><Performance />
@@ -885,15 +911,55 @@ export function ApexEtherStudio() {
       <div>
         <strong>Apex Ether</strong>
         <span>
-          Creado por Jonathan Villaverde · © 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a>
+          {t('Creado por Jonathan Villaverde', 'Created by Jonathan Villaverde')} · © 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a>
         </span>
       </div>
-      <nav aria-label="Navegación y autoría">
-        <a href={import.meta.env.BASE_URL}>Catálogo</a>
-        <a href={`${import.meta.env.BASE_URL}?lab=true`}>Lab</a>
+      <nav aria-label={t('Navegación y autoría', 'Navigation and authorship')}>
+        <a href={`${import.meta.env.BASE_URL}?lang=${locale}`}>{t('Catálogo', 'Catalog')}</a>
+        <a href={`${import.meta.env.BASE_URL}?lab=true&lang=${locale}`}>Lab</a>
         <a href="https://github.com/jvsysarch" rel="author noopener noreferrer" target="_blank">GitHub</a>
         <a href="https://ar.linkedin.com/in/jonathanvillaverde" rel="author noopener noreferrer" target="_blank">LinkedIn</a>
       </nav>
     </footer>
   </main>;
+}
+
+function LanguageSwitcher({
+  locale,
+  onChange,
+}: {
+  readonly locale: ApexEtherLocale;
+  readonly onChange: (locale: ApexEtherLocale) => void;
+}) {
+  return <nav className="catalog-language" aria-label={locale === 'es' ? 'Idioma' : 'Language'}>
+    <button type="button" aria-pressed={locale === 'es'} onClick={() => onChange('es')}>ES</button>
+    <button type="button" aria-pressed={locale === 'en'} onClick={() => onChange('en')}>EN</button>
+  </nav>;
+}
+
+const initialLocale = (): ApexEtherLocale => {
+  const requested = new URLSearchParams(window.location.search).get('lang');
+  if (requested === 'es' || requested === 'en') return requested;
+  const stored = localStorage.getItem('apex-ether.locale');
+  return stored === 'en' ? 'en' : 'es';
+};
+
+export function ApexEtherStudio() {
+  const [locale, setLocale] = useState<ApexEtherLocale>(initialLocale);
+  const updateLocale = (nextLocale: ApexEtherLocale) => {
+    setLocale(nextLocale);
+    localStorage.setItem('apex-ether.locale', nextLocale);
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', nextLocale);
+    window.history.replaceState(null, '', url);
+  };
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.title = locale === 'en' ? 'Apex Ether — Studio' : 'Apex Ether — Studio';
+  }, [locale]);
+  return <StudioLocaleProvider locale={locale}>
+    <ApexEtherLocaleProvider locale={locale}>
+      <ApexEtherStudioContent locale={locale} onLocaleChange={updateLocale} />
+    </ApexEtherLocaleProvider>
+  </StudioLocaleProvider>;
 }

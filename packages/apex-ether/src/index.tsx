@@ -12,6 +12,7 @@ import {
 } from 'react';
 
 export type ApexEtherSurfaceMode = 'glass' | 'solid';
+export type ApexEtherLocale = 'es' | 'en';
 export type ApexEtherTone = 'neutral' | 'positive' | 'info' | 'warning' | 'danger' | 'emphasis';
 export type ApexEtherPanelId =
   | 'speed'
@@ -131,6 +132,22 @@ export class ApexEtherTelemetryStore {
 }
 
 const StoreContext = createContext<ApexEtherTelemetryStore | null>(null);
+const LocaleContext = createContext<ApexEtherLocale>('es');
+
+export function ApexEtherLocaleProvider({
+  locale,
+  children,
+}: PropsWithChildren<{ readonly locale: ApexEtherLocale }>) {
+  return <LocaleContext.Provider value={locale}>{children}</LocaleContext.Provider>;
+}
+
+export function useApexEtherLocale(): ApexEtherLocale {
+  return useContext(LocaleContext);
+}
+
+export function etherText(locale: ApexEtherLocale, es: string, en: string): string {
+  return locale === 'en' ? en : es;
+}
 
 export function ApexEtherProvider({ store, children }: PropsWithChildren<{ store: ApexEtherTelemetryStore }>) {
   return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
@@ -279,6 +296,7 @@ export const ApexEtherTachometer = memo(({
   readonly rpm: number;
   readonly maximumRpm: number;
 }) => {
+  const locale = useApexEtherLocale();
   const scaleMaximum = Math.max(1, Math.ceil(maximumRpm / 1000));
   const normalizedRpm = Math.min(1, Math.max(0, rpm / (scaleMaximum * 1000)));
   const normalizedRedline = Math.min(1, Math.max(0, maximumRpm / (scaleMaximum * 1000)));
@@ -288,11 +306,12 @@ export const ApexEtherTachometer = memo(({
     '--apex-ether-redline': normalizedRedline,
     '--apex-ether-tach-columns': ticks.length,
   } as CSSProperties;
+  const rpmLabel = (rpm / 1000).toFixed(1).replace('.', locale === 'es' ? ',' : '.');
   return <div className="apex-ether-tachometer" style={style}>
-    <div><span>RPM ×1000</span><strong>{(rpm / 1000).toFixed(1).replace('.', ',')}</strong></div>
+    <div><span>RPM ×1000</span><strong>{rpmLabel}</strong></div>
     <i
       role="progressbar"
-      aria-label="Revoluciones por minuto"
+      aria-label={etherText(locale, 'Revoluciones por minuto', 'Revolutions per minute')}
       aria-valuemin={0}
       aria-valuemax={maximumRpm}
       aria-valuenow={Math.round(rpm)}
@@ -302,21 +321,29 @@ export const ApexEtherTachometer = memo(({
 });
 
 export const ApexEtherSpeed = memo(({ motion, mode = 'glass' }: { motion: ApexEtherMotion; mode?: ApexEtherSurfaceMode }) => {
-  return <ApexEtherSurface mode={mode} className="apex-ether-speed" ariaLabel="Conducción">
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface mode={mode} className="apex-ether-speed" ariaLabel={etherText(locale, 'Conducción', 'Driving')}>
     <div className="apex-ether-speed__main"><strong>{Math.round(motion.speedKmh)}</strong><span>km/h</span></div>
-    <div className="apex-ether-speed__meta"><b>{motion.gear}</b><span>Marcha</span></div>
+    <div className="apex-ether-speed__meta"><b>{motion.gear}</b><span>{etherText(locale, 'Marcha', 'Gear')}</span></div>
     <ApexEtherTachometer rpm={motion.rpm} maximumRpm={motion.maximumRpm} />
-    <div className="apex-ether-pedals" aria-label="Entrada de controles"><i style={{ '--apex-ether-level': motion.throttle } as CSSProperties}>Acel.</i><i style={{ '--apex-ether-level': motion.brake } as CSSProperties}>Freno</i></div>
+    <div className="apex-ether-pedals" aria-label={etherText(locale, 'Entrada de controles', 'Control input')}>
+      <i style={{ '--apex-ether-level': motion.throttle } as CSSProperties}>{etherText(locale, 'Acel.', 'Throttle')}</i>
+      <i style={{ '--apex-ether-level': motion.brake } as CSSProperties}>{etherText(locale, 'Freno', 'Brake')}</i>
+    </div>
   </ApexEtherSurface>;
 });
 
-export const ApexEtherRaceClock = memo(({ race, mode = 'glass' }: { race: ApexEtherRace; mode?: ApexEtherSurfaceMode }) => (
-  <ApexEtherSurface title="Vuelta actual" mode={mode} className="apex-ether-clock">
+export const ApexEtherRaceClock = memo(({ race, mode = 'glass' }: { race: ApexEtherRace; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface title={etherText(locale, 'Vuelta actual', 'Current lap')} mode={mode} className="apex-ether-clock">
     <strong data-semantic="highlight">{race.elapsed}</strong>
-    <div><span data-semantic="info">Mejor {race.bestLap ?? '—'}</span><b data-tone={race.deltaTone ?? 'neutral'}>{race.delta ?? 'Sin referencia'}</b></div>
-    <ol aria-label="Sectores">{Array.from({ length: race.sectorCount }, (_, index) => <li key={index} data-active={index === race.sector - 1 || undefined} data-complete={index < race.sector - 1 || undefined} />)}</ol>
-  </ApexEtherSurface>
-));
+    <div>
+      <span data-semantic="info">{etherText(locale, 'Mejor', 'Best')} {race.bestLap ?? '—'}</span>
+      <b data-tone={race.deltaTone ?? 'neutral'}>{race.delta ?? etherText(locale, 'Sin referencia', 'No reference')}</b>
+    </div>
+    <ol aria-label={etherText(locale, 'Sectores', 'Sectors')}>{Array.from({ length: race.sectorCount }, (_, index) => <li key={index} data-active={index === race.sector - 1 || undefined} data-complete={index < race.sector - 1 || undefined} />)}</ol>
+  </ApexEtherSurface>;
+});
 
 export const ApexEtherReferenceDelta = memo(({
   sector,
@@ -329,6 +356,7 @@ export const ApexEtherReferenceDelta = memo(({
   readonly maximumDeltaSeconds?: number;
   readonly mode?: ApexEtherSurfaceMode;
 }) => {
+  const locale = useApexEtherLocale();
   const safeDelta = Number.isFinite(deltaSeconds) ? deltaSeconds : 0;
   const tone: ApexEtherTone = safeDelta < 0
     ? 'positive'
@@ -341,14 +369,14 @@ export const ApexEtherReferenceDelta = memo(({
   );
   const deltaLabel = `${safeDelta < 0 ? '−' : safeDelta > 0 ? '+' : ''}${Math.abs(safeDelta).toFixed(3)}`;
   const comparison = safeDelta < 0
-    ? 'Más rápido que tu mejor vuelta'
+    ? etherText(locale, 'Más rápido que tu mejor vuelta', 'Faster than your best lap')
     : safeDelta > 0
-      ? 'Más lento que tu mejor vuelta'
-      : 'Igual que tu mejor vuelta';
+      ? etherText(locale, 'Más lento que tu mejor vuelta', 'Slower than your best lap')
+      : etherText(locale, 'Igual que tu mejor vuelta', 'Matching your best lap');
   const style = { '--apex-ether-delta': magnitude } as CSSProperties;
   return <ApexEtherSurface
     eyebrow={sector}
-    title="Diferencia de vuelta"
+    title={etherText(locale, 'Diferencia de vuelta', 'Lap delta')}
     mode={mode}
     className="apex-ether-reference-delta"
   >
@@ -361,24 +389,26 @@ export const ApexEtherReferenceDelta = memo(({
       data-direction={safeDelta < 0 ? 'gain' : safeDelta > 0 ? 'loss' : 'even'}
       data-tone={tone}
       style={style}
-      aria-label={`${comparison}: ${deltaLabel} segundos`}
+      aria-label={`${comparison}: ${deltaLabel} ${etherText(locale, 'segundos', 'seconds')}`}
     >
       <div aria-hidden="true"><i /><b /></div>
-      <ol aria-hidden="true"><li>Más rápido</li><li>Referencia</li><li>Más lento</li></ol>
+      <ol aria-hidden="true"><li>{etherText(locale, 'Más rápido', 'Faster')}</li><li>{etherText(locale, 'Referencia', 'Reference')}</li><li>{etherText(locale, 'Más lento', 'Slower')}</li></ol>
     </div>
   </ApexEtherSurface>;
 });
 
-export const ApexEtherPosition = memo(({ race, mode = 'glass' }: { race: ApexEtherRace; mode?: ApexEtherSurfaceMode }) => (
-  <ApexEtherSurface title="Posición" mode={mode} className="apex-ether-position">
+export const ApexEtherPosition = memo(({ race, mode = 'glass' }: { race: ApexEtherRace; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface title={etherText(locale, 'Posición', 'Position')} mode={mode} className="apex-ether-position">
     <strong>{race.position}</strong><span>/ {race.entrants}</span>
-    <em>Vuelta {race.lap} de {race.lapCount}</em>
-  </ApexEtherSurface>
-));
+    <em>{etherText(locale, 'Vuelta', 'Lap')} {race.lap} {etherText(locale, 'de', 'of')} {race.lapCount}</em>
+  </ApexEtherSurface>;
+});
 
-export const ApexEtherLeaderboard = memo(({ entries, mode = 'solid' }: { entries: readonly { readonly name: string; readonly gap: string; readonly active?: boolean }[]; mode?: ApexEtherSurfaceMode }) => (
-  <ApexEtherSurface title="Clasificación" eyebrow="En directo" mode={mode} className="apex-ether-leaderboard">
-    <ApexEtherPanelList ordered label="Clasificación de pilotos">
+export const ApexEtherLeaderboard = memo(({ entries, mode = 'solid' }: { entries: readonly { readonly name: string; readonly gap: string; readonly active?: boolean }[]; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface title={etherText(locale, 'Clasificación', 'Standings')} eyebrow={etherText(locale, 'En directo', 'Live')} mode={mode} className="apex-ether-leaderboard">
+    <ApexEtherPanelList ordered label={etherText(locale, 'Clasificación de pilotos', 'Driver standings')}>
       {entries.map((entry, index) => <ApexEtherPanelRow
         key={entry.name}
         leading={index + 1}
@@ -387,12 +417,13 @@ export const ApexEtherLeaderboard = memo(({ entries, mode = 'solid' }: { entries
         active={entry.active}
       />)}
     </ApexEtherPanelList>
-  </ApexEtherSurface>
-));
+  </ApexEtherSurface>;
+});
 
-export const ApexEtherObjectives = memo(({ items, mode = 'glass' }: { items: readonly { readonly label: string; readonly progress?: string; readonly complete?: boolean }[]; mode?: ApexEtherSurfaceMode }) => (
-  <ApexEtherSurface title="Objetivos" mode={mode} className="apex-ether-objectives">
-    <ApexEtherPanelList label="Objetivos de sesión">
+export const ApexEtherObjectives = memo(({ items, mode = 'glass' }: { items: readonly { readonly label: string; readonly progress?: string; readonly complete?: boolean }[]; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface title={etherText(locale, 'Objetivos', 'Objectives')} mode={mode} className="apex-ether-objectives">
+    <ApexEtherPanelList label={etherText(locale, 'Objetivos de sesión', 'Session objectives')}>
       {items.map(item => <ApexEtherPanelRow
         key={item.label}
         leading={<i aria-hidden="true" data-complete={item.complete || undefined} />}
@@ -401,29 +432,30 @@ export const ApexEtherObjectives = memo(({ items, mode = 'glass' }: { items: rea
         tone={item.complete ? 'positive' : 'neutral'}
       />)}
     </ApexEtherPanelList>
-  </ApexEtherSurface>
-));
+  </ApexEtherSurface>;
+});
 
-export const ApexEtherWheelHealth = memo(({ wheels, mode = 'solid' }: { wheels: readonly ApexEtherWheel[]; mode?: ApexEtherSurfaceMode }) => (
-  <ApexEtherSurface title="Neumáticos" eyebrow="Contacto" mode={mode} className="apex-ether-wheels">
-    <div>{wheels.map(wheel => <article key={wheel.id} data-tone={wheel.tone ?? 'neutral'}><b>{wheel.id}</b><strong>{Math.round(wheel.temperatureC)}°</strong><span>{wheel.pressurePsi.toFixed(1)} psi · {wheel.loadKn.toFixed(1)} kN</span><i><em style={{ width: `${wheel.gripPercent}%` }} /></i></article>)}</div>
-  </ApexEtherSurface>
-));
+export const ApexEtherWheelHealth = memo(({ wheels, mode = 'solid' }: { wheels: readonly ApexEtherWheel[]; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface title={etherText(locale, 'Neumáticos', 'Tires')} eyebrow={etherText(locale, 'Contacto', 'Contact')} mode={mode} className="apex-ether-wheels">
+    <div>{wheels.map(wheel => <article key={wheel.id} data-tone={wheel.tone ?? 'neutral'}><b>{wheel.id}</b><strong>{Math.round(wheel.temperatureC)}°</strong><span>{wheel.pressurePsi.toFixed(1).replace('.', locale === 'es' ? ',' : '.')} psi · {wheel.loadKn.toFixed(1).replace('.', locale === 'es' ? ',' : '.')} kN</span><i><em style={{ width: `${wheel.gripPercent}%` }} /></i></article>)}</div>
+  </ApexEtherSurface>;
+});
 
-const vehicleWheelLabels: Record<ApexEtherContactWheel['id'], { readonly short: string; readonly full: string }> = {
-  FL: { short: 'DI', full: 'Delantera izquierda' },
-  FR: { short: 'DD', full: 'Delantera derecha' },
-  RL: { short: 'TI', full: 'Trasera izquierda' },
-  RR: { short: 'TD', full: 'Trasera derecha' },
-};
+const vehicleWheelLabels = (locale: ApexEtherLocale): Record<ApexEtherContactWheel['id'], { readonly short: string; readonly full: string }> => ({
+  FL: { short: locale === 'es' ? 'DI' : 'FL', full: etherText(locale, 'Delantera izquierda', 'Front left') },
+  FR: { short: locale === 'es' ? 'DD' : 'FR', full: etherText(locale, 'Delantera derecha', 'Front right') },
+  RL: { short: locale === 'es' ? 'TI' : 'RL', full: etherText(locale, 'Trasera izquierda', 'Rear left') },
+  RR: { short: locale === 'es' ? 'TD' : 'RR', full: etherText(locale, 'Trasera derecha', 'Rear right') },
+});
 
-const wheelStatusLabel = (tone: ApexEtherTone) => {
+const wheelStatusLabel = (tone: ApexEtherTone, locale: ApexEtherLocale) => {
   switch (tone) {
-    case 'positive': return 'Adherencia estable';
-    case 'info': return 'Cerca del límite';
-    case 'warning': return 'Deslizamiento';
-    case 'danger': return 'Pérdida de agarre';
-    default: return 'Contacto estable';
+    case 'positive': return etherText(locale, 'Adherencia estable', 'Stable grip');
+    case 'info': return etherText(locale, 'Cerca del límite', 'Near the limit');
+    case 'warning': return etherText(locale, 'Deslizamiento', 'Sliding');
+    case 'danger': return etherText(locale, 'Pérdida de agarre', 'Loss of grip');
+    default: return etherText(locale, 'Contacto estable', 'Stable contact');
   }
 };
 
@@ -434,15 +466,17 @@ export const ApexEtherVehicleContact = memo(({
 }: {
   readonly wheels: readonly ApexEtherContactWheel[];
   readonly mode?: ApexEtherSurfaceMode;
-}) => (
-  <ApexEtherSurface title="Contacto y carga" eyebrow="Vista del vehículo" mode={mode} className="apex-ether-vehicle-contact">
-    <div className="apex-ether-vehicle-contact__map" aria-label="Contacto, dirección y compresión de las cuatro ruedas">
+}) => {
+  const locale = useApexEtherLocale();
+  const labelsByWheel = vehicleWheelLabels(locale);
+  return <ApexEtherSurface title={etherText(locale, 'Contacto y carga', 'Contact and load')} eyebrow={etherText(locale, 'Vista del vehículo', 'Vehicle view')} mode={mode} className="apex-ether-vehicle-contact">
+    <div className="apex-ether-vehicle-contact__map" aria-label={etherText(locale, 'Contacto, dirección y compresión de las cuatro ruedas', 'Contact, steering and compression for all four wheels')}>
       <div className="apex-ether-vehicle-contact__vehicle" aria-hidden="true">
         <i /><i /><span /><b />
       </div>
       {wheels.map(wheel => {
         const tone = wheel.tone ?? 'neutral';
-        const labels = vehicleWheelLabels[wheel.id];
+        const labels = labelsByWheel[wheel.id];
         const compression = Math.min(1, Math.max(0, wheel.compression ?? 0));
         const steeringAngle = wheel.steeringAngleDeg ?? 0;
         const slipPercent = wheel.slipPercent ?? Math.max(0, 100 - wheel.gripPercent);
@@ -455,7 +489,7 @@ export const ApexEtherVehicleContact = memo(({
           data-wheel={wheel.id}
           data-tone={tone}
           style={wheelStyle}
-          aria-label={`${labels.full}: ${wheelStatusLabel(tone)}, carga ${wheel.loadKn.toFixed(1)} kilonewtons, deslizamiento ${slipPercent.toFixed(1)} por ciento, compresión ${Math.round(compression * 100)} por ciento`}
+          aria-label={`${labels.full}: ${wheelStatusLabel(tone, locale)}, ${etherText(locale, 'carga', 'load')} ${wheel.loadKn.toFixed(1)} kilonewtons, ${etherText(locale, 'deslizamiento', 'slip')} ${slipPercent.toFixed(1)} ${etherText(locale, 'por ciento', 'percent')}, ${etherText(locale, 'compresión', 'compression')} ${Math.round(compression * 100)} ${etherText(locale, 'por ciento', 'percent')}`}
         >
           <div className="apex-ether-vehicle-contact__hardware" aria-hidden="true">
             <div className="apex-ether-vehicle-contact__damper"><i><b /></i><span>{Math.round(compression * 100)}%</span></div>
@@ -463,28 +497,30 @@ export const ApexEtherVehicleContact = memo(({
           </div>
           <div className="apex-ether-vehicle-contact__readout">
             <div><strong>{labels.short}</strong><b>{wheel.loadKn.toFixed(1)} kN</b></div>
-            <span>{wheelStatusLabel(tone)}</span>
-            <small>Slip {slipPercent.toFixed(1)}% · dirección {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
+            <span>{wheelStatusLabel(tone, locale)}</span>
+            <small>{etherText(locale, 'Deslizamiento', 'Slip')} {slipPercent.toFixed(1)}% · {etherText(locale, 'dirección', 'steering')} {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
           </div>
           <i className="apex-ether-vehicle-contact__state" aria-hidden="true" />
         </article>;
       })}
     </div>
-  </ApexEtherSurface>
-));
-
-export const ApexEtherRoute = memo(({ points, mode = 'glass' }: { points?: readonly ApexEtherRoutePoint[]; mode?: ApexEtherSurfaceMode }) => {
-  const path = useMemo(() => points?.map((point, index) => `${index ? 'L' : 'M'} ${point.x} ${point.y}`).join(' ') ?? '', [points]);
-  return <ApexEtherSurface title="Ruta" mode={mode} className="apex-ether-route"><svg viewBox="0 0 180 180" aria-label="Mapa de ruta"><path d={path} /><circle cx="94" cy="109" r="5" /></svg><span>Próxima curva · 240 m</span></ApexEtherSurface>;
+  </ApexEtherSurface>;
 });
 
-export const ApexEtherInput = memo(({ motion, mode = 'solid' }: { motion: ApexEtherMotion; mode?: ApexEtherSurfaceMode }) => (
-  <ApexEtherSurface title="Entrada" mode={mode} className="apex-ether-input">
-    <ApexEtherMetric label="Acelerador" value={`${Math.round(motion.throttle * 100)}%`} tone="emphasis" />
-    <ApexEtherMetric label="Freno" value={`${Math.round(motion.brake * 100)}%`} tone={motion.brake > .7 ? 'danger' : motion.brake > .35 ? 'warning' : 'neutral'} />
-    <ApexEtherMetric label="Dirección" value={`${Math.round(motion.steering ?? 0)}°`} tone="info" />
-  </ApexEtherSurface>
-));
+export const ApexEtherRoute = memo(({ points, mode = 'glass' }: { points?: readonly ApexEtherRoutePoint[]; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  const path = useMemo(() => points?.map((point, index) => `${index ? 'L' : 'M'} ${point.x} ${point.y}`).join(' ') ?? '', [points]);
+  return <ApexEtherSurface title={etherText(locale, 'Ruta', 'Route')} mode={mode} className="apex-ether-route"><svg viewBox="0 0 180 180" aria-label={etherText(locale, 'Mapa de ruta', 'Route map')}><path d={path} /><circle cx="94" cy="109" r="5" /></svg><span>{etherText(locale, 'Próxima curva', 'Next turn')} · 240 m</span></ApexEtherSurface>;
+});
+
+export const ApexEtherInput = memo(({ motion, mode = 'solid' }: { motion: ApexEtherMotion; mode?: ApexEtherSurfaceMode }) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface title={etherText(locale, 'Entrada', 'Input')} mode={mode} className="apex-ether-input">
+    <ApexEtherMetric label={etherText(locale, 'Acelerador', 'Throttle')} value={`${Math.round(motion.throttle * 100)}%`} tone="emphasis" />
+    <ApexEtherMetric label={etherText(locale, 'Freno', 'Brake')} value={`${Math.round(motion.brake * 100)}%`} tone={motion.brake > .7 ? 'danger' : motion.brake > .35 ? 'warning' : 'neutral'} />
+    <ApexEtherMetric label={etherText(locale, 'Dirección', 'Steering')} value={`${Math.round(motion.steering ?? 0)}°`} tone="info" />
+  </ApexEtherSurface>;
+});
 
 export interface ApexEtherHudProps { readonly telemetry: ApexEtherTelemetry; readonly panels: readonly ApexEtherPanelId[]; readonly mode?: ApexEtherSurfaceMode; }
 
