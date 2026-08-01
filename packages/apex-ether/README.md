@@ -72,6 +72,7 @@ export function SessionSummary() {
 
 - `ApexEtherSpeed`
 - `ApexEtherRaceClock`
+- `ApexEtherReferenceDelta`
 - `ApexEtherPosition`
 - `ApexEtherLeaderboard`
 - `ApexEtherObjectives`

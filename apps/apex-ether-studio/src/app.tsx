@@ -6,6 +6,7 @@ import {
   ApexEtherObjectives,
   ApexEtherPosition,
   ApexEtherRaceClock,
+  ApexEtherReferenceDelta,
   ApexEtherRoute,
   ApexEtherSpeed,
   ApexEtherSurface,
@@ -712,7 +713,7 @@ function RaceBroadcast({ mode }: { mode: ApexEtherSurfaceMode }) {
 function TrackAttack({ mode }: { mode: ApexEtherSurfaceMode }) {
   return <div className="hud-layout hud-layout--attack">
     <ApexEtherRaceClock race={telemetry.race} mode={mode} />
-    <ApexEtherSurface title="Ritmo de referencia" mode={mode} className="catalog-split"><ApexEtherMetric label="Sector 2" value="−0.384" unit="s" tone="positive" detail="Más rápido que tu mejor vuelta" /><div className="catalog-split__bars"><i /><i /><i /><i /></div></ApexEtherSurface>
+    <ApexEtherReferenceDelta sector="Sector 2" deltaSeconds={-0.384} mode={mode} />
     <ApexEtherRoute points={telemetry.route} mode={mode} />
     <ApexEtherSpeed motion={telemetry.motion} mode={mode} />
   </div>;

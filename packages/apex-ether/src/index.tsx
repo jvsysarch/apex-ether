@@ -29,6 +29,7 @@ export type ApexEtherPanelId =
   | 'session'
   | 'notification'
   | 'split'
+  | 'reference-delta'
   | 'camera';
 
 export interface ApexEtherMetricValue {
@@ -316,6 +317,57 @@ export const ApexEtherRaceClock = memo(({ race, mode = 'glass' }: { race: ApexEt
     <ol aria-label="Sectores">{Array.from({ length: race.sectorCount }, (_, index) => <li key={index} data-active={index === race.sector - 1 || undefined} data-complete={index < race.sector - 1 || undefined} />)}</ol>
   </ApexEtherSurface>
 ));
+
+export const ApexEtherReferenceDelta = memo(({
+  sector,
+  deltaSeconds,
+  maximumDeltaSeconds = 0.5,
+  mode = 'glass',
+}: {
+  readonly sector: string;
+  readonly deltaSeconds: number;
+  readonly maximumDeltaSeconds?: number;
+  readonly mode?: ApexEtherSurfaceMode;
+}) => {
+  const safeDelta = Number.isFinite(deltaSeconds) ? deltaSeconds : 0;
+  const tone: ApexEtherTone = safeDelta < 0
+    ? 'positive'
+    : safeDelta > 0
+      ? 'danger'
+      : 'neutral';
+  const magnitude = Math.min(
+    1,
+    Math.abs(safeDelta) / Math.max(0.001, maximumDeltaSeconds),
+  );
+  const deltaLabel = `${safeDelta < 0 ? '−' : safeDelta > 0 ? '+' : ''}${Math.abs(safeDelta).toFixed(3)}`;
+  const comparison = safeDelta < 0
+    ? 'Más rápido que tu mejor vuelta'
+    : safeDelta > 0
+      ? 'Más lento que tu mejor vuelta'
+      : 'Igual que tu mejor vuelta';
+  const style = { '--apex-ether-delta': magnitude } as CSSProperties;
+  return <ApexEtherSurface
+    eyebrow={sector}
+    title="Diferencia de vuelta"
+    mode={mode}
+    className="apex-ether-reference-delta"
+  >
+    <div className="apex-ether-reference-delta__value" data-tone={tone}>
+      <strong>{deltaLabel}</strong><span>s</span>
+      <p><i aria-hidden="true" />{comparison}</p>
+    </div>
+    <div
+      className="apex-ether-reference-delta__scale"
+      data-direction={safeDelta < 0 ? 'gain' : safeDelta > 0 ? 'loss' : 'even'}
+      data-tone={tone}
+      style={style}
+      aria-label={`${comparison}: ${deltaLabel} segundos`}
+    >
+      <div aria-hidden="true"><i /><b /></div>
+      <ol aria-hidden="true"><li>Más rápido</li><li>Referencia</li><li>Más lento</li></ol>
+    </div>
+  </ApexEtherSurface>;
+});
 
 export const ApexEtherPosition = memo(({ race, mode = 'glass' }: { race: ApexEtherRace; mode?: ApexEtherSurfaceMode }) => (
   <ApexEtherSurface title="Posición" mode={mode} className="apex-ether-position">
