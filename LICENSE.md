@@ -19,3 +19,7 @@ La atribución debe identificar a **Jonathan Villaverde** como autor original de
 ## Marcas
 
 Las licencias anteriores no conceden derechos sobre los nombres, identificadores o marcas **Apex Ether**, **Apex** o **JVSYSARCH**, salvo el uso nominativo necesario para atribución.
+
+## Fuentes de terceros
+
+Los archivos de fuente incluidos en `packages/apex-ether/src/fonts/` no están cubiertos por las licencias propias de Apex Ether. **Inter**, **Manrope**, **Nunito Sans** y **Space Grotesk** se redistribuyen bajo SIL Open Font License 1.1. Sus textos de licencia originales están incluidos en `packages/apex-ether/src/fonts/licenses/`.

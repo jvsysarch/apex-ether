@@ -54,6 +54,7 @@ const fontOptions = Object.freeze([
 
 const fontWeights = Object.freeze([400, 500, 600, 700, 800]);
 const figureFontOptions = Object.freeze(['Manrope', 'Plus Jakarta Sans']);
+const labFontStylesheet = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Lato:wght@400;700;900&family=Lexend:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&family=Rubik:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700;800&display=swap';
 type TypographyLevel = 'title' | 'hero' | 'speed' | 'figures' | 'subtitle' | 'small';
 interface TypographyValue {
   readonly family: string;
@@ -880,6 +881,17 @@ function ApexEtherStudioContent({
   const query = new URLSearchParams(window.location.search);
   const isLabRoute = window.location.pathname.replace(/\/+$/, '').endsWith('/lab');
   const labEnabled = isLabRoute || query.get('lab') === 'true';
+  useEffect(() => {
+    if (!labEnabled) return undefined;
+    const existing = document.querySelector<HTMLLinkElement>('link[data-apex-ether-lab-fonts]');
+    if (existing) return undefined;
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = labFontStylesheet;
+    stylesheet.dataset.apexEtherLabFonts = 'true';
+    document.head.append(stylesheet);
+    return () => stylesheet.remove();
+  }, [labEnabled]);
   if (query.get('view') === 'expanded') {
     return <main className="catalog-shell" style={typographyStyle}><LanguageSwitcher locale={locale} onChange={onLocaleChange} /><ExpandedCatalog /></main>;
   }
