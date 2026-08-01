@@ -143,6 +143,7 @@ export function useApexEtherSlice<K extends ApexEtherTelemetrySlice>(slice: K): 
 export interface ApexEtherSurfaceProps {
   readonly title?: string;
   readonly eyebrow?: string;
+  readonly ariaLabel?: string;
   readonly mode?: ApexEtherSurfaceMode;
   readonly tone?: ApexEtherTone;
   readonly className?: string;
@@ -247,9 +248,9 @@ export const ApexEtherProgress = memo(({
 });
 
 export const ApexEtherPanel = memo(({
-  title, eyebrow, mode = 'glass', tone = 'neutral', className = '', children,
+  title, eyebrow, ariaLabel, mode = 'glass', tone = 'neutral', className = '', children,
 }: ApexEtherSurfaceProps) => (
-  <section className={`apex-ether-panel apex-ether-surface apex-ether-panel--${mode} apex-ether-surface--${mode} apex-ether-panel--${tone} apex-ether-surface--${tone} ${className}`.trim()}>
+  <section aria-label={ariaLabel} className={`apex-ether-panel apex-ether-surface apex-ether-panel--${mode} apex-ether-surface--${mode} apex-ether-panel--${tone} apex-ether-surface--${tone} ${className}`.trim()}>
     <ApexEtherPanelHeader title={title} eyebrow={eyebrow} />
     <ApexEtherPanelBody>{children}</ApexEtherPanelBody>
   </section>
@@ -297,7 +298,7 @@ export const ApexEtherTachometer = memo(({
 });
 
 export const ApexEtherSpeed = memo(({ motion, mode = 'glass' }: { motion: ApexEtherMotion; mode?: ApexEtherSurfaceMode }) => {
-  return <ApexEtherSurface title="Conducción" mode={mode} className="apex-ether-speed">
+  return <ApexEtherSurface mode={mode} className="apex-ether-speed" ariaLabel="Conducción">
     <div className="apex-ether-speed__main"><strong>{Math.round(motion.speedKmh)}</strong><span>km/h</span></div>
     <div className="apex-ether-speed__meta"><b>{motion.gear}</b><span>Marcha</span></div>
     <ApexEtherTachometer rpm={motion.rpm} maximumRpm={motion.maximumRpm} />

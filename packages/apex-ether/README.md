@@ -26,6 +26,8 @@ import '@jvsysarch/apex-ether/styles.css';
 
 ## Composición básica
 
+La cabecera es opcional. Un panel sólo debe declarar `title` o `eyebrow` cuando agregan contexto; componentes autosuficientes como el velocímetro pueden omitirlos sin reservar espacio vacío.
+
 ```tsx
 import {
   ApexEtherMetric,

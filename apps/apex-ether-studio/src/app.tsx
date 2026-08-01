@@ -150,12 +150,12 @@ const fontSizeRanges: Readonly<Record<TypographyLevel, { readonly min: number; r
 });
 
 const defaultTypography: TypographySettings = Object.freeze({
-  title: Object.freeze({ family: 'Manrope', weight: 700, size: 28, lineHeight: 1.08, letterSpacing: -0.03, marginBefore: 0, marginAfter: 0 }),
-  hero: Object.freeze({ family: 'Space Grotesk', weight: 500, size: 40, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
-  speed: Object.freeze({ family: 'Manrope', weight: 500, size: 96, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
-  figures: Object.freeze({ family: 'Manrope', weight: 500, size: 40, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
-  subtitle: Object.freeze({ family: 'Nunito Sans', weight: 500, size: 19, lineHeight: 1.25, letterSpacing: 0, marginBefore: 0, marginAfter: 0 }),
-  small: Object.freeze({ family: 'Inter', weight: 500, size: 16, lineHeight: 1.25, letterSpacing: 0.065, marginBefore: 0, marginAfter: 0 }),
+  title: Object.freeze({ family: 'Manrope', weight: 600, size: 23, lineHeight: 1.08, letterSpacing: -0.005, marginBefore: 0, marginAfter: 0 }),
+  hero: Object.freeze({ family: 'Space Grotesk', weight: 500, size: 41, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
+  speed: Object.freeze({ family: 'Manrope', weight: 500, size: 48, lineHeight: 0.82, letterSpacing: -0.045, marginBefore: 0, marginAfter: 0 }),
+  figures: Object.freeze({ family: 'Manrope', weight: 500, size: 24, lineHeight: 0.87, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
+  subtitle: Object.freeze({ family: 'Nunito Sans', weight: 400, size: 16, lineHeight: 1.3, letterSpacing: 0.02, marginBefore: 0, marginAfter: 0 }),
+  small: Object.freeze({ family: 'Inter', weight: 400, size: 12, lineHeight: 1.25, letterSpacing: 0.065, marginBefore: 0, marginAfter: 0 }),
 });
 
 const typographyLabels: Readonly<Record<TypographyLevel, string>> = Object.freeze({
