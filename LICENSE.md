@@ -22,4 +22,4 @@ Las licencias anteriores no conceden derechos sobre los nombres, identificadores
 
 ## Fuentes de terceros
 
-Los archivos de fuente incluidos en `packages/apex-ether/src/fonts/` no están cubiertos por las licencias propias de Apex Ether. **Inter**, **Manrope**, **Nunito Sans** y **Space Grotesk** se redistribuyen bajo SIL Open Font License 1.1. Sus textos de licencia originales están incluidos en `packages/apex-ether/src/fonts/licenses/`.
+Los archivos incluidos en `packages/apex-ether/src/fonts/` no están cubiertos por las licencias propias de Apex Ether. Las veinte familias tipográficas disponibles en el catálogo se redistribuyen bajo SIL Open Font License 1.1. Sus textos de licencia originales están incluidos en `packages/apex-ether/src/fonts/licenses/`.

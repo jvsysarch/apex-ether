@@ -79,7 +79,7 @@ corepack pnpm preview
 
 ## Modelo de rendimiento
 
-- Las cuatro familias tipográficas finales se sirven como WOFF2 variables locales; el catálogo normal y los consumidores no dependen de un CDN de fuentes.
+- Las veinte familias tipográficas del catálogo se sirven como WOFF2 locales desde el mismo despliegue; el HUD, el Lab y los consumidores no dependen de un CDN ni de fuentes del sistema.
 - El estado de telemetría se divide en `motion`, `race`, `wheels`, `session` y `route`.
 - Cada componente se suscribe únicamente al segmento que necesita mediante `useSyncExternalStore`.
 - El host publica objetos inmutables sólo cuando su contenido cambia.

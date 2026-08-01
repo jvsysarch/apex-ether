@@ -5,6 +5,8 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useRef,
+  useState,
   useSyncExternalStore,
   type CSSProperties,
   type PropsWithChildren,
@@ -280,6 +282,149 @@ export const ApexEtherPanel = memo(({
 /** Compatibility name for the first Ether prototype. New code should use Panel. */
 export const ApexEtherSurface = ApexEtherPanel;
 
+export interface ApexEtherMovableProps {
+  readonly storageKey: string;
+  readonly children: ReactNode;
+  readonly className?: string;
+  readonly ariaLabel?: string;
+  readonly initialPosition?: Readonly<{ x: number; y: number }>;
+}
+
+const readMovablePosition = (
+  storageKey: string,
+  initialPosition: Readonly<{ x: number; y: number }>,
+): { x: number; y: number } => {
+  if (typeof window === 'undefined') return { ...initialPosition };
+  try {
+    const stored = window.localStorage.getItem(storageKey);
+    if (!stored) return { ...initialPosition };
+    const parsed = JSON.parse(stored) as { x?: unknown; y?: unknown };
+    return typeof parsed.x === 'number' && typeof parsed.y === 'number'
+      ? { x: parsed.x, y: parsed.y }
+      : { ...initialPosition };
+  } catch {
+    return { ...initialPosition };
+  }
+};
+
+/**
+ * High-frequency drag updates write directly to the compositor transform.
+ * React state and localStorage are updated only when the gesture finishes.
+ */
+export const ApexEtherMovable = memo(({
+  storageKey,
+  children,
+  className = '',
+  ariaLabel,
+  initialPosition = { x: 0, y: 0 },
+}: ApexEtherMovableProps) => {
+  const locale = useApexEtherLocale();
+  const [position, setPosition] = useState(() => readMovablePosition(storageKey, initialPosition));
+  const rootRef = useRef<HTMLDivElement>(null);
+  const positionRef = useRef(position);
+  const dragRef = useRef<{
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+    x: number;
+    y: number;
+    minX: number;
+    maxX: number;
+    minY: number;
+    maxY: number;
+  } | null>(null);
+
+  const applyPosition = useCallback((next: { x: number; y: number }) => {
+    positionRef.current = next;
+    if (rootRef.current) rootRef.current.style.transform = `translate3d(${next.x}px, ${next.y}px, 0)`;
+  }, []);
+
+  const persistPosition = useCallback((next: { x: number; y: number }) => {
+    setPosition(next);
+    try { window.localStorage.setItem(storageKey, JSON.stringify(next)); } catch { /* Storage is optional. */ }
+  }, [storageKey]);
+
+  const finishDrag = useCallback((pointerId: number) => {
+    const element = rootRef.current;
+    if (!element || dragRef.current?.pointerId !== pointerId) return;
+    dragRef.current = null;
+    delete element.dataset.dragging;
+    if (element.hasPointerCapture(pointerId)) element.releasePointerCapture(pointerId);
+    persistPosition(positionRef.current);
+  }, [persistPosition]);
+
+  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    const target = event.target as Element;
+    if (target.closest('button, a, input, select, textarea')) return;
+    const element = rootRef.current;
+    if (!element) return;
+    const rect = element.getBoundingClientRect();
+    const current = positionRef.current;
+    dragRef.current = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      x: current.x,
+      y: current.y,
+      minX: current.x - rect.left,
+      maxX: current.x + window.innerWidth - rect.right,
+      minY: current.y - rect.top,
+      maxY: current.y + window.innerHeight - rect.bottom,
+    };
+    element.dataset.dragging = 'true';
+    element.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }, []);
+
+  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    applyPosition({
+      x: Math.min(drag.maxX, Math.max(drag.minX, drag.x + event.clientX - drag.clientX)),
+      y: Math.min(drag.maxY, Math.max(drag.minY, drag.y + event.clientY - drag.clientY)),
+    });
+  }, [applyPosition]);
+
+  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    const step = event.shiftKey ? 24 : 8;
+    let deltaX = 0;
+    let deltaY = 0;
+    switch (event.key) {
+      case 'ArrowLeft': deltaX = -step; break;
+      case 'ArrowRight': deltaX = step; break;
+      case 'ArrowUp': deltaY = -step; break;
+      case 'ArrowDown': deltaY = step; break;
+      default: return;
+    }
+    event.preventDefault();
+    const next = { x: positionRef.current.x + deltaX, y: positionRef.current.y + deltaY };
+    applyPosition(next);
+    persistPosition(next);
+  }, [applyPosition, persistPosition]);
+
+  const resetPosition = useCallback(() => {
+    const next = { ...initialPosition };
+    applyPosition(next);
+    persistPosition(next);
+  }, [applyPosition, initialPosition, persistPosition]);
+
+  return <div
+    ref={rootRef}
+    className={`apex-ether-movable ${className}`.trim()}
+    style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
+    role="group"
+    tabIndex={0}
+    aria-label={ariaLabel ?? etherText(locale, 'Panel movible de Apex Ether', 'Movable Apex Ether panel')}
+    onPointerDown={handlePointerDown}
+    onPointerMove={handlePointerMove}
+    onPointerUp={event => finishDrag(event.pointerId)}
+    onPointerCancel={event => finishDrag(event.pointerId)}
+    onKeyDown={handleKeyDown}
+    onDoubleClick={resetPosition}
+  >{children}</div>;
+});
+
 export const ApexEtherMetric = memo(({ label, value, unit, detail, tone = 'neutral', variant = 'metric' }: ApexEtherMetricValue) => (
   <div className={`apex-ether-metric apex-ether-metric--${tone} apex-ether-metric--${variant}`}>
     <span>{label}</span>
@@ -469,7 +614,7 @@ export const ApexEtherVehicleContact = memo(({
 }) => {
   const locale = useApexEtherLocale();
   const labelsByWheel = vehicleWheelLabels(locale);
-  return <ApexEtherSurface title={etherText(locale, 'Contacto y carga', 'Contact and load')} eyebrow={etherText(locale, 'Vista del vehículo', 'Vehicle view')} mode={mode} className="apex-ether-vehicle-contact">
+  return <ApexEtherSurface eyebrow={etherText(locale, 'CONTACTO + CARGA', 'CONTACT + LOAD')} mode={mode} className="apex-ether-vehicle-contact">
     <div className="apex-ether-vehicle-contact__map" aria-label={etherText(locale, 'Contacto, dirección y compresión de las cuatro ruedas', 'Contact, steering and compression for all four wheels')}>
       <div className="apex-ether-vehicle-contact__vehicle" aria-hidden="true">
         <i /><i /><span /><b />
@@ -498,9 +643,77 @@ export const ApexEtherVehicleContact = memo(({
           <div className="apex-ether-vehicle-contact__readout">
             <div><strong>{labels.short}</strong><b>{wheel.loadKn.toFixed(1)} kN</b></div>
             <span>{wheelStatusLabel(tone, locale)}</span>
-            <small>{etherText(locale, 'Deslizamiento', 'Slip')} {slipPercent.toFixed(1)}% · {etherText(locale, 'dirección', 'steering')} {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
+            <small>Slip {slipPercent.toFixed(1)}% · {etherText(locale, 'giro', 'steer')} {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
           </div>
           <i className="apex-ether-vehicle-contact__state" aria-hidden="true" />
+        </article>;
+      })}
+    </div>
+  </ApexEtherSurface>;
+});
+
+export const ApexEtherVehicleDiagram = memo(({
+  wheels,
+  mode = 'glass',
+}: {
+  readonly wheels: readonly ApexEtherContactWheel[];
+  readonly mode?: ApexEtherSurfaceMode;
+}) => {
+  const locale = useApexEtherLocale();
+  return <ApexEtherSurface
+    eyebrow={etherText(locale, 'CONTACTO + CARGA', 'CONTACT + LOAD')}
+    mode={mode}
+    className="apex-ether-vehicle-diagram"
+  >
+    <div className="apex-ether-vehicle-diagram__stage" aria-label={etherText(locale, 'Esquema de contacto y compresión', 'Contact and compression diagram')}>
+      <div className="apex-ether-vehicle-contact__vehicle" aria-hidden="true"><i /><i /><span /><b /></div>
+      {wheels.map(wheel => {
+        const tone = wheel.tone ?? 'neutral';
+        const compression = Math.min(1, Math.max(0, wheel.compression ?? 0));
+        const style = {
+          '--apex-ether-wheel-angle': `${wheel.steeringAngleDeg ?? 0}deg`,
+          '--apex-ether-compression': compression,
+        } as CSSProperties;
+        return <div className="apex-ether-vehicle-diagram__wheel" key={wheel.id} data-wheel={wheel.id} data-tone={tone} style={style}>
+          <div className="apex-ether-vehicle-contact__hardware" aria-hidden="true">
+            <div className="apex-ether-vehicle-contact__damper"><i><b /></i><span>{Math.round(compression * 100)}%</span></div>
+            <i className="apex-ether-vehicle-contact__tire"><b /><b /><b /></i>
+          </div>
+        </div>;
+      })}
+    </div>
+  </ApexEtherSurface>;
+});
+
+export const ApexEtherWheelContactGrid = memo(({
+  wheels,
+  mode = 'glass',
+}: {
+  readonly wheels: readonly ApexEtherContactWheel[];
+  readonly mode?: ApexEtherSurfaceMode;
+}) => {
+  const locale = useApexEtherLocale();
+  const labelsByWheel = vehicleWheelLabels(locale);
+  return <ApexEtherSurface
+    eyebrow={etherText(locale, 'ESTADO DE RUEDAS', 'WHEEL STATUS')}
+    mode={mode}
+    className="apex-ether-wheel-contact-grid"
+  >
+    <div className="apex-ether-wheel-contact-grid__items">
+      {wheels.map(wheel => {
+        const tone = wheel.tone ?? 'neutral';
+        const labels = labelsByWheel[wheel.id];
+        const slipPercent = wheel.slipPercent ?? Math.max(0, 100 - wheel.gripPercent);
+        const steeringAngle = wheel.steeringAngleDeg ?? 0;
+        return <article
+          key={wheel.id}
+          data-tone={tone}
+          aria-label={`${labels.full}: ${wheelStatusLabel(tone, locale)}, ${wheel.loadKn.toFixed(1)} kilonewtons`}
+        >
+          <div><strong>{labels.short}</strong><b>{wheel.loadKn.toFixed(1)} kN</b></div>
+          <span>{wheelStatusLabel(tone, locale)}</span>
+          <small>Slip {slipPercent.toFixed(1)}% · {etherText(locale, 'giro', 'steer')} {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
+          <i aria-hidden="true" />
         </article>;
       })}
     </div>
@@ -522,21 +735,61 @@ export const ApexEtherInput = memo(({ motion, mode = 'solid' }: { motion: ApexEt
   </ApexEtherSurface>;
 });
 
-export interface ApexEtherHudProps { readonly telemetry: ApexEtherTelemetry; readonly panels: readonly ApexEtherPanelId[]; readonly mode?: ApexEtherSurfaceMode; }
+export interface ApexEtherHudProps {
+  readonly telemetry: ApexEtherTelemetry;
+  readonly panels: readonly ApexEtherPanelId[];
+  readonly mode?: ApexEtherSurfaceMode;
+  /** Namespace used to persist independent panel positions. */
+  readonly layoutKey?: string;
+  /** HUD panels are movable by default. */
+  readonly movable?: boolean;
+}
 
-/** Declarative HUD composition. Hosts can use it directly or compose its exported panels. */
-export const ApexEtherHud = memo(({ telemetry, panels, mode = 'glass' }: ApexEtherHudProps) => (
+const ApexEtherHudPanel = memo(({
+  panel,
+  telemetry,
+  mode,
+  storageKey,
+  movable,
+}: {
+  readonly panel: ApexEtherPanelId;
+  readonly telemetry: ApexEtherTelemetry;
+  readonly mode: ApexEtherSurfaceMode;
+  readonly storageKey: string;
+  readonly movable: boolean;
+}) => {
+  let content: ReactNode = null;
+  switch (panel) {
+    case 'speed': content = <ApexEtherSpeed motion={telemetry.motion} mode={mode} />; break;
+    case 'race-clock': content = <ApexEtherRaceClock race={telemetry.race} mode={mode} />; break;
+    case 'position': content = <ApexEtherPosition race={telemetry.race} mode={mode} />; break;
+    case 'tires':
+    case 'vehicle-health': content = <ApexEtherWheelHealth wheels={telemetry.wheels} mode={mode} />; break;
+    case 'route': content = <ApexEtherRoute points={telemetry.route} mode={mode} />; break;
+    case 'input': content = <ApexEtherInput motion={telemetry.motion} mode={mode} />; break;
+    default: return null;
+  }
+  return movable
+    ? <ApexEtherMovable storageKey={storageKey}>{content}</ApexEtherMovable>
+    : content;
+});
+
+/** Declarative HUD composition with independently persisted panel positions. */
+export const ApexEtherHud = memo(({
+  telemetry,
+  panels,
+  mode = 'glass',
+  layoutKey = 'apex-ether.hud',
+  movable = true,
+}: ApexEtherHudProps) => (
   <div className="apex-ether-hud" data-mode={mode}>
-    {panels.map(panel => {
-      switch (panel) {
-        case 'speed': return <ApexEtherSpeed key={panel} motion={telemetry.motion} mode={mode} />;
-        case 'race-clock': return <ApexEtherRaceClock key={panel} race={telemetry.race} mode={mode} />;
-        case 'position': return <ApexEtherPosition key={panel} race={telemetry.race} mode={mode} />;
-        case 'tires': case 'vehicle-health': return <ApexEtherWheelHealth key={panel} wheels={telemetry.wheels} mode={mode} />;
-        case 'route': return <ApexEtherRoute key={panel} points={telemetry.route} mode={mode} />;
-        case 'input': return <ApexEtherInput key={panel} motion={telemetry.motion} mode={mode} />;
-        default: return null;
-      }
-    })}
+    {panels.map((panel, index) => <ApexEtherHudPanel
+      key={`${panel}-${index}`}
+      panel={panel}
+      telemetry={telemetry}
+      mode={mode}
+      movable={movable}
+      storageKey={`${layoutKey}.${panel}.${index}.position`}
+    />)}
   </div>
 ));

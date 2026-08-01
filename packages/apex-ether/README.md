@@ -24,7 +24,7 @@ Importá la hoja de estilos una vez:
 import '@jvsysarch/apex-ether/styles.css';
 ```
 
-La hoja incluye versiones variables WOFF2 locales de **Manrope**, **Space Grotesk**, **Nunito Sans** e **Inter**. El HUD de producción no depende de Google Fonts y cada token conserva una cadena de fallback hacia fuentes del sistema. El Studio sólo carga por red las familias comparativas adicionales cuando se abre el Lab.
+La hoja incluye WOFF2 locales para las veinte familias disponibles en el Studio. El HUD, el catálogo y el Lab descargan las fuentes desde el mismo despliegue de Apex Ether: no dependen de Google Fonts ni de fuentes instaladas en el sistema. Los fallbacks tipográficos también apuntan exclusivamente a otras familias incluidas en el paquete.
 
 ## Idioma
 

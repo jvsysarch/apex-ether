@@ -54,7 +54,6 @@ const fontOptions = Object.freeze([
 
 const fontWeights = Object.freeze([400, 500, 600, 700, 800]);
 const figureFontOptions = Object.freeze(['Manrope', 'Plus Jakarta Sans']);
-const labFontStylesheet = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=Lato:wght@400;700;900&family=Lexend:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&family=Rubik:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700;800&display=swap';
 type TypographyLevel = 'title' | 'hero' | 'speed' | 'figures' | 'subtitle' | 'small';
 interface TypographyValue {
   readonly family: string;
@@ -181,7 +180,7 @@ function TypographyPreview({
 }) {
   const t = useStudioText();
   const selectedStyle = {
-    fontFamily: `"${value.family}", sans-serif`,
+    fontFamily: `"${value.family}", "Inter"`,
     fontSize: `${value.size}px`,
     fontWeight: value.weight,
     lineHeight: value.lineHeight,
@@ -814,12 +813,12 @@ function ApexEtherStudioContent({
     `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${shadow.spread}px rgb(0 0 0 / ${shadow.opacity}%)`
   );
   const typographyStyle = {
-    '--ether-font-title': `"${typography.title.family}", sans-serif`,
-    '--ether-font-hero': `"${typography.hero.family}", sans-serif`,
-    '--ether-font-speed': `"${typography.speed.family}", sans-serif`,
-    '--ether-font-figures': `"${typography.figures.family}", sans-serif`,
-    '--ether-font-subtitle': `"${typography.subtitle.family}", sans-serif`,
-    '--ether-font-small': `"${typography.small.family}", sans-serif`,
+    '--ether-font-title': `"${typography.title.family}", "Inter"`,
+    '--ether-font-hero': `"${typography.hero.family}", "Manrope"`,
+    '--ether-font-speed': `"${typography.speed.family}", "Inter"`,
+    '--ether-font-figures': `"${typography.figures.family}", "Inter"`,
+    '--ether-font-subtitle': `"${typography.subtitle.family}", "Inter"`,
+    '--ether-font-small': `"${typography.small.family}", "Manrope"`,
     '--ether-weight-title': typography.title.weight,
     '--ether-weight-hero': typography.hero.weight,
     '--ether-weight-speed': typography.speed.weight,
@@ -881,17 +880,6 @@ function ApexEtherStudioContent({
   const query = new URLSearchParams(window.location.search);
   const isLabRoute = window.location.pathname.replace(/\/+$/, '').endsWith('/lab');
   const labEnabled = isLabRoute || query.get('lab') === 'true';
-  useEffect(() => {
-    if (!labEnabled) return undefined;
-    const existing = document.querySelector<HTMLLinkElement>('link[data-apex-ether-lab-fonts]');
-    if (existing) return undefined;
-    const stylesheet = document.createElement('link');
-    stylesheet.rel = 'stylesheet';
-    stylesheet.href = labFontStylesheet;
-    stylesheet.dataset.apexEtherLabFonts = 'true';
-    document.head.append(stylesheet);
-    return () => stylesheet.remove();
-  }, [labEnabled]);
   if (query.get('view') === 'expanded') {
     return <main className="catalog-shell" style={typographyStyle}><LanguageSwitcher locale={locale} onChange={onLocaleChange} /><ExpandedCatalog /></main>;
   }
@@ -905,8 +893,8 @@ function ApexEtherStudioContent({
     </div> : null}
     <section className="catalog-hero">
       <p>{t('Apex Ether · sistema de telemetría', 'Apex Ether · telemetry system')}</p>
-      <h1>{t('Información inmediata.', 'Immediate information.')}<br /><i>{t('Espacio para decidir.', 'Room to decide.')}</i></h1>
-      <p className="catalog-hero__lede">{t('Telemetría clara para superficies amplias, con capas que acompañan la conducción sin ocultarla.', 'Clear telemetry for large displays, with layers that support driving without obscuring it.')}</p>
+      <h1>{t('Datos en tiempo real.', 'Real-time data.')}<br /><i>{t('Jerarquía para decidir.', 'Hierarchy for every decision.')}</i></h1>
+      <p className="catalog-hero__lede">{t('Lectura inmediata de telemetría en superficies amplias, con cada dato organizado por relevancia y renderizado sin interferir con la conducción.', 'Immediate telemetry reading on large displays, with every data point organized by relevance and rendered without interfering with driving.')}</p>
       <div>
         <span>{t('Lectura rápida', 'Fast reading')}</span>
         <span>{t('Opaco o vidrio transparente', 'Opaque or transparent glass')}</span>
