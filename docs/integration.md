@@ -8,7 +8,7 @@ Apex Ether recibe datos ya normalizados. La aplicación anfitriona crea un adapt
 fuente Apex → adaptador del host → contratos Ether → paneles React
 ```
 
-El adaptador es el único lugar que debe conocer ambos mundos. Esto evita que el HUD dependa de estructuras internas de Apex Physics, Apex Run o Apex Drive.
+El adaptador es el único lugar que debe conocer ambos mundos. Esto evita que el HUD dependa de estructuras internas de Apex Physics, del estado de carrera o de Apex Drive.
 
 ## Dependencia dentro del workspace
 

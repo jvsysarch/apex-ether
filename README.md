@@ -26,9 +26,10 @@ Apex Ether separa esas responsabilidades. El host conserva el control del motor,
 
 ```mermaid
 flowchart LR
-  S["Apex Physics / Apex Run"] --> A["Adaptador de telemetría"]
+  P["Apex Physics"] --> A["Adaptador del host"]
+  R["Carrera, ruta y sesión"] --> A
   A --> E["@jvsysarch/apex-ether"]
-  E --> D["Apex Drive"]
+  E --> D["HUD de Apex Drive"]
   E --> T["Ether Studio"]
   E --> C["Interfaces personalizadas"]
 ```

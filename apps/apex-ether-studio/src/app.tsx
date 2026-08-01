@@ -764,13 +764,13 @@ function Ecosystem() {
   return <section className="catalog-ecosystem" id="ecosystem">
     <header><span>Integración con Apex</span><h2>Una frontera clara entre datos y experiencia</h2><p>Apex Ether recibe contratos de telemetría estables y devuelve componentes React. El resto del ecosistema conserva sus responsabilidades.</p></header>
     <div className="catalog-ecosystem__flow" aria-label="Flujo de integración de Apex Ether">
-      <article><span>Productores</span><strong>Apex Physics<br />Apex Run</strong><p>Movimiento, carrera, neumáticos, ruta y sesión.</p></article>
+      <article><span>Fuentes</span><strong>Apex Physics<br />Estado de carrera</strong><p>Movimiento, controles, neumáticos, carrera, ruta y sesión.</p></article>
       <i aria-hidden="true">→</i>
-      <article><span>Contrato</span><strong>Adaptador de telemetría</strong><p>Normaliza unidades y publica únicamente los segmentos modificados.</p></article>
+      <article><span>Frontera del host</span><strong>Adaptador de Apex Drive</strong><p>Normaliza unidades y publica únicamente los segmentos modificados.</p></article>
       <i aria-hidden="true">→</i>
       <article data-primary><span>Sistema visual</span><strong>@jvsysarch/apex-ether</strong><p>Paneles, tokens, modos de superficie y suscripciones selectivas.</p></article>
       <i aria-hidden="true">→</i>
-      <article><span>Consumidores</span><strong>Apex Drive<br />Ether Studio</strong><p>HUD integrado, catálogo, Lab y futuras interfaces personalizadas.</p></article>
+      <article><span>Aplicaciones</span><strong>HUD de Apex Drive<br />Ether Studio</strong><p>Experiencia integrada, catálogo, Lab y futuras composiciones.</p></article>
     </div>
   </section>;
 }
