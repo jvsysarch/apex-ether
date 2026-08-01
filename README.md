@@ -101,7 +101,7 @@ El paquete todavía es privado dentro del workspace. Hasta su primera distribuci
 ## Autoría
 
 Diseño, dirección y desarrollo: **Jonathan Villaverde**  
-Contacto: `jv.sys.arch@gmail.com`  
+Autor: [GitHub](https://github.com/jvsysarch) · [LinkedIn](https://ar.linkedin.com/in/jonathanvillaverde)  
 Copyright © 2026 Jonathan Villaverde.
 
 ## Licencias

@@ -882,12 +882,17 @@ export function ApexEtherStudio() {
     <Ecosystem />
     <Library /><Performance />
     <footer className="catalog-footer">
-      <div><strong>Apex Ether</strong><span>Creado por Jonathan Villaverde · © 2026</span></div>
-      <nav aria-label="Navegación y licencias">
+      <div>
+        <strong>Apex Ether</strong>
+        <span>
+          Creado por Jonathan Villaverde · © 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a>
+        </span>
+      </div>
+      <nav aria-label="Navegación y autoría">
         <a href={import.meta.env.BASE_URL}>Catálogo</a>
         <a href={`${import.meta.env.BASE_URL}?lab=true`}>Lab</a>
-        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a>
-        <a href="mailto:jv.sys.arch@gmail.com">Contacto</a>
+        <a href="https://github.com/jvsysarch" rel="author noopener noreferrer" target="_blank">GitHub</a>
+        <a href="https://ar.linkedin.com/in/jonathanvillaverde" rel="author noopener noreferrer" target="_blank">LinkedIn</a>
       </nav>
     </footer>
   </main>;

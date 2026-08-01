@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "author": "Jonathan Villaverde <jv.sys.arch@gmail.com>",
+  "author": {
+    "name": "Jonathan Villaverde",
+    "url": "https://github.com/jvsysarch"
+  },
   "license": "PolyForm-Noncommercial-1.0.0",
   "exports": {
     ".": "./src/index.tsx",
