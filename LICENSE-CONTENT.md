@@ -11,4 +11,4 @@ Podés compartir y adaptar ese material bajo estas condiciones:
 
 Texto legal y versión canónica: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-Copyright © 2026 Jonathan Villaverde.
+© Jonathan Villaverde 2026.

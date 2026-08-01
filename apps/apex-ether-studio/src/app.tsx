@@ -911,7 +911,7 @@ function ApexEtherStudioContent({
       <div>
         <strong>Apex Ether</strong>
         <span>
-          © 2026 Jonathan Villaverde · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a>
+          © Jonathan Villaverde 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license">CC BY-NC-SA 4.0</a>
         </span>
       </div>
       <nav aria-label={t('Navegación y autoría', 'Navigation and authorship')}>

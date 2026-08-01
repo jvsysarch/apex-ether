@@ -1,6 +1,6 @@
 # Licencias de Apex Ether
 
-Copyright © 2026 Jonathan Villaverde. Algunos derechos reservados.
+© Jonathan Villaverde 2026. Algunos derechos reservados.
 
 Este repositorio utiliza licencias separadas según el tipo de material:
 

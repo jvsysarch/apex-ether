@@ -128,4 +128,4 @@ La guía completa, con ejemplos de propiedades, store y HUD declarativo, está e
 
 ## Autoría y licencia
 
-© 2026 Jonathan Villaverde. Código bajo PolyForm Noncommercial 1.0.0; sistema visual y documentación bajo CC BY-NC-SA 4.0.
+© Jonathan Villaverde 2026. Código bajo PolyForm Noncommercial 1.0.0; sistema visual y documentación bajo CC BY-NC-SA 4.0.
