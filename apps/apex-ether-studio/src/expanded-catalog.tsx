@@ -7,7 +7,8 @@ import {
   ApexEtherProgress,
   ApexEtherSurface,
   ApexEtherTachometer,
-  ApexEtherVehicleContact,
+  ApexEtherVehicleDiagram,
+  ApexEtherWheelContactGrid,
   type ApexEtherSurfaceMode,
   type ApexEtherTone,
 } from '@jvsysarch/apex-ether';
@@ -121,7 +122,10 @@ const wheelStates = [
 function DynamicsView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
   const t = useStudioText();
   return <div className="expanded-layout expanded-layout--dynamics" id="vehicle-contact">
-    <ApexEtherVehicleContact wheels={wheelStates} mode={mode} />
+    <div className="expanded-vehicle-stack">
+      <ApexEtherVehicleDiagram wheels={wheelStates} mode={mode} />
+      <ApexEtherWheelContactGrid wheels={wheelStates} mode={mode} />
+    </div>
     <ApexEtherSurface title={t('Dinámica instantánea', 'Instant dynamics')} eyebrow={t('Valores de decisión', 'Decision values')} mode={mode} className="expanded-dynamics-summary">
       <ApexEtherTachometer rpm={6840} maximumRpm={8200} />
       <ApexEtherMetricGrid columns={2}>
