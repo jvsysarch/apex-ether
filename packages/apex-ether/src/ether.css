@@ -1,0 +1,558 @@
+:root {
+  --ether-ink: #17221f;
+  --ether-neutral: #707070;
+  --ether-muted: var(--ether-neutral);
+  --ether-line: rgb(255 255 255 / 72%);
+  --ether-highlight: #ff941a;
+  --ether-on-highlight: #17221f;
+  --ether-accent: var(--ether-highlight);
+  --ether-positive: #31a300;
+  --ether-info: #0778cf;
+  --ether-warning: #ffc800;
+  --ether-danger: #ff0033;
+  --ether-shadow: 0 18px 44px rgb(0 0 0 / 16%);
+  --ether-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ether-font-title: "Manrope", sans-serif;
+  --ether-font-hero: "Space Grotesk", sans-serif;
+  --ether-font-figures: "Manrope", sans-serif;
+  --ether-font-subtitle: "Nunito Sans", sans-serif;
+  --ether-font-small: "Inter", sans-serif;
+  --ether-weight-title: 700;
+  --ether-weight-hero: 500;
+  --ether-weight-figures: 500;
+  --ether-weight-subtitle: 500;
+  --ether-weight-small: 500;
+  --ether-size-title: 28px;
+  --ether-size-hero: 40px;
+  --ether-size-figures: 40px;
+  --ether-size-subtitle: 19px;
+  --ether-size-small: 16px;
+  --ether-glass-text: rgb(255 255 255 / 96%);
+  --ether-glass-text-muted: rgb(255 255 255 / 84%);
+  --ether-glass-fill-start: rgb(255 255 255 / 13%);
+  --ether-glass-fill-end: rgb(0 0 0 / 23%);
+  --ether-glass-gradient-angle: 167deg;
+  --ether-glass-fill: linear-gradient(var(--ether-glass-gradient-angle), var(--ether-glass-fill-start), var(--ether-glass-fill-end));
+  --ether-glass-border: rgb(255 255 255 / 18%);
+  --ether-glass-border-width: 2px;
+  --ether-glass-backdrop-blur: 3px;
+  --ether-glass-text-stroke-color: rgb(0 0 0 / 28%);
+  --ether-glass-text-stroke-width: .35px;
+  --ether-glass-shadow: 8px 13px 24px -7px rgb(0 0 0 / 23%);
+  --ether-glass-text-shadow: 0 1px 14px rgb(0 0 0 / 20%);
+}
+
+.apex-ether-hud,
+.apex-ether-panel,
+.apex-ether-surface {
+  color: var(--ether-ink);
+  font-family: var(--ether-font);
+}
+
+.apex-ether-hud {
+  display: grid;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.apex-ether-panel,
+.apex-ether-surface {
+  min-width: 0;
+  padding: clamp(16px, 1.25vw, 24px);
+  overflow: hidden;
+  border: 1px solid var(--ether-line);
+  border-radius: 22px;
+  box-shadow: var(--ether-shadow);
+  contain: layout paint style;
+}
+
+.apex-ether-panel--glass,
+.apex-ether-surface--glass {
+  color: var(--ether-glass-text);
+  border-color: var(--ether-glass-border);
+  border-width: var(--ether-glass-border-width);
+  background: var(--ether-glass-fill);
+  -webkit-backdrop-filter: blur(var(--ether-glass-backdrop-blur));
+  backdrop-filter: blur(var(--ether-glass-backdrop-blur));
+  -webkit-text-stroke: var(--ether-glass-text-stroke-width) var(--ether-glass-text-stroke-color);
+  paint-order: stroke fill;
+  box-shadow: var(--ether-glass-shadow);
+  text-shadow: var(--ether-glass-text-shadow);
+}
+
+.apex-ether-panel--solid,
+.apex-ether-surface--solid {
+  color: var(--ether-ink);
+  border-color: rgb(23 34 31 / 14%);
+  background: rgb(255 255 255 / 96%);
+}
+
+/* El acento superior se reserva para alertas que afectan al panel completo. */
+.apex-ether-panel--warning,
+.apex-ether-surface--warning { border-top-color: var(--ether-warning); }
+.apex-ether-panel--danger,
+.apex-ether-surface--danger { border-top-color: var(--ether-danger); }
+
+.apex-ether-panel__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: clamp(10px, .85vw, 16px);
+}
+
+.apex-ether-panel__header div {
+  display: grid;
+  gap: 3px;
+}
+
+.apex-ether-panel__header span,
+.apex-ether-metric > span {
+  color: currentColor;
+  font-size: var(--ether-size-small);
+  font-family: var(--ether-font-small);
+  font-weight: var(--ether-weight-small);
+  letter-spacing: .065em;
+  line-height: 1.15;
+  opacity: .82;
+  text-transform: uppercase;
+}
+
+.apex-ether-panel__header h3 {
+  margin: 0;
+  font-size: var(--ether-size-title);
+  font-family: var(--ether-font-title);
+  font-weight: var(--ether-weight-title);
+  letter-spacing: -.03em;
+  line-height: 1.08;
+}
+
+.apex-ether-panel--solid .apex-ether-panel__header span {
+  color: var(--ether-ink);
+  opacity: 1;
+}
+
+.apex-ether-panel__body {
+  min-width: 0;
+}
+
+.apex-ether-panel-list {
+  display: grid;
+  gap: 5px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.apex-ether-panel-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 38px;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 9px;
+  font-size: var(--ether-size-subtitle);
+  font-family: var(--ether-font-subtitle);
+  font-weight: var(--ether-weight-subtitle);
+}
+
+.apex-ether-panel-row > b {
+  min-width: 22px;
+  font-family: var(--ether-font-small);
+  font-size: var(--ether-size-small);
+  font-weight: var(--ether-weight-small);
+}
+
+.apex-ether-panel-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.apex-ether-panel-row > small {
+  grid-column: 2;
+  color: currentColor;
+  font-size: var(--ether-size-small);
+  font-family: var(--ether-font-small);
+  font-weight: var(--ether-weight-small);
+  opacity: .82;
+}
+
+.apex-ether-panel-row > strong {
+  grid-column: 3;
+  font-family: var(--ether-font-figures);
+  font-size: var(--ether-size-small);
+  font-weight: var(--ether-weight-figures);
+  font-variant-numeric: tabular-nums;
+}
+
+.apex-ether-panel-row[data-active] {
+  color: #fff;
+  background: #00000054;
+  font-size: var(--ether-size-subtitle);
+  font-weight: var(--ether-weight-subtitle);
+}
+
+.apex-ether-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--apex-ether-columns), minmax(0, 1fr));
+  gap: 18px;
+}
+
+.apex-ether-metric {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 5px;
+}
+
+.apex-ether-metric--positive,
+.apex-ether-metric--info,
+.apex-ether-metric--warning,
+.apex-ether-metric--danger,
+.apex-ether-metric--emphasis {
+  padding-inline-start: 12px;
+  border-inline-start: 4px solid var(--ether-highlight);
+}
+
+.apex-ether-metric--positive { border-inline-start-color: var(--ether-positive); }
+.apex-ether-metric--info { border-inline-start-color: var(--ether-info); }
+.apex-ether-metric--warning { border-inline-start-color: var(--ether-warning); }
+.apex-ether-metric--danger { border-inline-start-color: var(--ether-danger); }
+
+.apex-ether-metric strong {
+  font-size: var(--ether-size-figures);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+  letter-spacing: -.065em;
+  line-height: .92;
+}
+
+.apex-ether-metric--hero strong {
+  font-size: var(--ether-size-hero);
+  font-family: var(--ether-font-hero);
+  font-weight: var(--ether-weight-hero);
+}
+
+.apex-ether-metric small {
+  margin-left: 5px;
+  font-size: .4em;
+  font-weight: 720;
+  letter-spacing: 0;
+}
+
+.apex-ether-metric em {
+  color: currentColor;
+  font-size: var(--ether-size-small);
+  font-style: normal;
+  font-family: var(--ether-font-small);
+  font-weight: var(--ether-weight-small);
+  opacity: .78;
+}
+
+.apex-ether-metric--positive strong { color: var(--ether-ink); }
+.apex-ether-metric--info strong { color: var(--ether-ink); }
+.apex-ether-metric--warning strong { color: var(--ether-ink); }
+.apex-ether-metric--danger strong { color: var(--ether-ink); }
+.apex-ether-metric--emphasis strong { color: var(--ether-ink); }
+
+.apex-ether-progress {
+  --ether-progress-color: var(--ether-highlight);
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.apex-ether-progress[data-tone="positive"] { --ether-progress-color: var(--ether-positive); }
+.apex-ether-progress[data-tone="info"] { --ether-progress-color: var(--ether-info); }
+.apex-ether-progress[data-tone="warning"] { --ether-progress-color: var(--ether-warning); }
+.apex-ether-progress[data-tone="danger"] { --ether-progress-color: var(--ether-danger); }
+.apex-ether-progress[data-tone="neutral"] { --ether-progress-color: var(--ether-neutral); }
+.apex-ether-progress > div { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.apex-ether-progress span,
+.apex-ether-progress small { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
+.apex-ether-progress strong { font-family: var(--ether-font-figures); font-size: var(--ether-size-subtitle); font-weight: var(--ether-weight-figures); }
+.apex-ether-progress > i { height: 8px; overflow: hidden; border-radius: 999px; background: rgb(255 255 255 / 24%); }
+.apex-ether-progress > i > b { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--ether-progress-color); transform-origin: left; }
+.apex-ether-progress > small { opacity: .82; }
+.apex-ether-panel--solid .apex-ether-progress > i { background: rgb(23 34 31 / 12%); }
+.apex-ether-panel--glass .apex-ether-panel__header span,
+.apex-ether-panel--glass .apex-ether-metric > span,
+.apex-ether-panel--glass .apex-ether-metric em {
+  color: var(--ether-glass-text-muted);
+  opacity: 1;
+}
+
+.apex-ether-panel--glass .apex-ether-metric--positive strong,
+.apex-ether-panel--glass .apex-ether-metric--info strong,
+.apex-ether-panel--glass .apex-ether-metric--warning strong,
+.apex-ether-panel--glass .apex-ether-metric--danger strong {
+  color: var(--ether-glass-text);
+}
+
+.apex-ether-panel--glass .apex-ether-metric--emphasis strong { color: var(--ether-glass-text); }
+
+.apex-ether-speed .apex-ether-panel__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 13px 22px;
+  min-width: 260px;
+}
+
+.apex-ether-speed__main {
+  display: flex;
+  align-items: end;
+  gap: 9px;
+}
+
+.apex-ether-speed__main strong {
+  font-size: clamp(62px, calc(var(--ether-size-figures) * 2.4), 120px);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.085em;
+  line-height: .76;
+}
+
+.apex-ether-speed__main span {
+  padding-bottom: 5px;
+  font-size: var(--ether-size-small);
+  font-family: var(--ether-font-small);
+  font-weight: var(--ether-weight-small);
+}
+
+.apex-ether-speed__meta {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+
+.apex-ether-speed__meta b {
+  font-size: clamp(36px, calc(var(--ether-size-figures) * 1.5), 76px);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+  letter-spacing: -.065em;
+  line-height: .76;
+}
+
+.apex-ether-speed__meta span { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
+.apex-ether-speed__meta i {
+  width: 104px;
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--ether-highlight) calc(var(--apex-ether-rpm) * 100%), #cbd5d0 0);
+}
+
+.apex-ether-pedals {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.apex-ether-pedals i {
+  display: grid;
+  gap: 6px;
+  font-size: var(--ether-size-small);
+  font-style: normal;
+  font-family: var(--ether-font-small);
+  font-weight: var(--ether-weight-small);
+}
+
+.apex-ether-pedals i::after {
+  height: 8px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--ether-highlight) calc(var(--apex-ether-level) * 100%), #cbd5d0 0);
+  content: '';
+}
+
+.apex-ether-pedals i:last-child::after {
+  background: linear-gradient(90deg, var(--ether-danger) calc(var(--apex-ether-level) * 100%), #cbd5d0 0);
+}
+
+.apex-ether-clock .apex-ether-panel__body > strong {
+  display: block;
+  padding-bottom: 10px;
+  background: linear-gradient(var(--ether-highlight), var(--ether-highlight)) left bottom / min(180px, 42%) 5px no-repeat;
+  font-size: clamp(38px, calc(var(--ether-size-figures) * 1.55), 78px);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.06em;
+  line-height: .9;
+}
+
+.apex-ether-clock span[data-semantic="info"] {
+  padding-left: 10px;
+  border-left: 4px solid var(--ether-info);
+}
+
+.apex-ether-clock .apex-ether-panel__body > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 18px;
+  font-size: var(--ether-size-subtitle);
+  font-family: var(--ether-font-subtitle);
+  font-weight: var(--ether-weight-subtitle);
+}
+
+.apex-ether-clock b[data-tone] {
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--ether-neutral);
+  font-size: var(--ether-size-subtitle);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+}
+
+.apex-ether-clock b[data-tone="positive"] { color: var(--ether-ink); background: var(--ether-positive); }
+.apex-ether-clock b[data-tone="info"] { color: var(--ether-ink); background: var(--ether-info); }
+.apex-ether-clock b[data-tone="warning"] { color: #17221f; background: var(--ether-warning); }
+.apex-ether-clock b[data-tone="danger"] { color: var(--ether-ink); background: var(--ether-danger); }
+.apex-ether-clock b[data-tone="emphasis"] { color: var(--ether-on-highlight); background: var(--ether-highlight); }
+.apex-ether-clock ol {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 0;
+  margin: 18px 0 0;
+  list-style: none;
+}
+
+.apex-ether-clock li {
+  height: 8px;
+  border: 1px solid #75827d;
+  border-radius: 99px;
+  background: #d6ded9;
+}
+
+.apex-ether-clock li[data-complete] { background: var(--ether-positive); }
+.apex-ether-clock li[data-active] { border-color: var(--ether-highlight); background: var(--ether-highlight); }
+
+.apex-ether-position .apex-ether-panel__body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: 0 8px;
+}
+
+.apex-ether-position .apex-ether-panel__body > strong {
+  font-size: clamp(68px, calc(var(--ether-size-figures) * 2.5), 132px);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.095em;
+  line-height: .74;
+}
+
+.apex-ether-position .apex-ether-panel__body > span {
+  padding-bottom: 4px;
+  font-size: var(--ether-size-figures);
+  font-family: var(--ether-font-figures);
+  font-weight: var(--ether-weight-figures);
+}
+
+.apex-ether-position .apex-ether-panel__body > em {
+  grid-column: 1 / -1;
+  margin-top: 16px;
+  font-size: var(--ether-size-small);
+  font-style: normal;
+  font-family: var(--ether-font-small);
+  font-weight: var(--ether-weight-small);
+}
+
+.apex-ether-leaderboard .apex-ether-panel-row {
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+}
+
+.apex-ether-objectives .apex-ether-panel-row {
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+}
+
+.apex-ether-objectives .apex-ether-panel-row > b {
+  display: grid;
+  min-width: 18px;
+  place-items: center;
+}
+
+.apex-ether-objectives .apex-ether-panel-row > b i {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.apex-ether-objectives .apex-ether-panel-row > b i[data-complete] {
+  border-color: var(--ether-positive);
+  background: var(--ether-positive);
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+.apex-ether-wheels .apex-ether-panel__body > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.apex-ether-wheels article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 9px;
+  padding: 12px;
+  border: 1px solid rgb(38 49 45 / 18%);
+  border-radius: 14px;
+}
+
+.apex-ether-wheels article b {
+  grid-row: span 2;
+  align-self: center;
+  padding: 8px 6px;
+  border-radius: 7px;
+  color: #fff;
+  background: var(--ether-neutral);
+  font-size: 14px;
+}
+
+.apex-ether-wheels article[data-tone="warning"] { border-color: var(--ether-warning); }
+.apex-ether-wheels article[data-tone="warning"] b { color: #17221f; background: var(--ether-warning); }
+.apex-ether-wheels article[data-tone="warning"] strong { color: var(--ether-ink); }
+.apex-ether-wheels article[data-tone="danger"] { border-color: var(--ether-danger); }
+.apex-ether-wheels article[data-tone="danger"] b { color: var(--ether-ink); background: var(--ether-danger); }
+.apex-ether-wheels article[data-tone="danger"] strong { color: var(--ether-ink); }
+
+.apex-ether-wheels article strong { font-family: var(--ether-font-figures); font-size: calc(var(--ether-size-figures) * .58); font-weight: var(--ether-weight-figures); letter-spacing: -.05em; }
+.apex-ether-wheels article span { grid-column: 1 / -1; font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
+.apex-ether-wheels article i { grid-column: 1 / -1; height: 6px; overflow: hidden; border-radius: 20px; background: #dadddc; }
+.apex-ether-wheels article i em { display: block; height: 100%; background: var(--ether-positive); }
+.apex-ether-wheels article[data-tone="warning"] i em { background: var(--ether-warning); }
+.apex-ether-wheels article[data-tone="danger"] i em { background: var(--ether-danger); }
+
+.apex-ether-route .apex-ether-panel__body {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+}
+
+.apex-ether-route svg { width: min(100%, 205px); overflow: visible; }
+.apex-ether-route path { fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.apex-ether-route circle { fill: var(--ether-highlight); stroke: #fff; stroke-width: 3; }
+.apex-ether-route span { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
+
+.apex-ether-input .apex-ether-panel__body {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(92px, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 760px) {
+  .apex-ether-panel,
+  .apex-ether-surface { padding: 15px; border-radius: 18px; }
+  .apex-ether-speed .apex-ether-panel__body { min-width: 0; }
+  .apex-ether-wheels .apex-ether-panel__body > div { grid-template-columns: 1fr; }
+  .apex-ether-metric-grid { grid-template-columns: 1fr; }
+}

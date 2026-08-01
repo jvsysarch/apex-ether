@@ -1,0 +1,13 @@
+{
+  "name": "apex-ether",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "author": "Jonathan Villaverde <jv.sys.arch@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "dev": "pnpm --dir apps/apex-ether-studio dev",
+    "build": "pnpm --dir apps/apex-ether-studio build",
+    "preview": "pnpm --dir apps/apex-ether-studio preview"
+  }
+}
