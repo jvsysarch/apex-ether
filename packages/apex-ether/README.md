@@ -6,7 +6,7 @@ El paquete no depende de Apex Drive ni de Apex Ether Studio. Los consumidores pr
 
 ## Estado
 
-Versión inicial `0.1.0`, privada dentro del workspace. La API puede evolucionar antes de la primera versión estable.
+Versión `0.2.0`, privada dentro del workspace. La API puede evolucionar antes de la primera versión estable.
 
 ## Uso en el workspace
 
