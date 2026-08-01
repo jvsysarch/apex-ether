@@ -150,7 +150,7 @@ button { font: inherit; }
 .typography-lab fieldset label:first-of-type { grid-column: auto; }
 .typography-lab label > span {
   color: #52615b;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .045em;
   line-height: 1.15;
@@ -289,8 +289,8 @@ button { font: inherit; }
 .shadow-lab fieldset:nth-child(3) { grid-template-columns: repeat(4, minmax(84px, 1fr)); }
 .shadow-lab legend { padding: 0 5px; font-size: 12px; font-weight: 750; }
 .shadow-lab__range { display: grid; gap: 6px; }
-.shadow-lab__range > span { display: flex; justify-content: space-between; gap: 5px; color: #52615b; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-.shadow-lab__range > span b { color: #17221f; font-size: 10px; }
+.shadow-lab__range > span { display: flex; justify-content: space-between; gap: 5px; color: #52615b; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.shadow-lab__range > span b { color: #17221f; font-size: 12px; }
 .shadow-lab__range input { width: 100%; accent-color: var(--ether-highlight); }
 .shadow-lab__actions { display: grid; align-content: center; gap: 7px; }
 .shadow-lab__actions button {
@@ -329,7 +329,7 @@ button { font: inherit; }
 .glass-lab fieldset:nth-child(2) { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
 .glass-lab legend { padding: 0 5px; font-size: 12px; font-weight: 750; }
 .glass-lab__color { display: grid; grid-template-columns: auto 50px 1fr; align-items: center; gap: 10px; }
-.glass-lab__color span { color: #52615b; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.glass-lab__color span { color: #52615b; font-size: 12px; font-weight: 700; text-transform: uppercase; }
 .glass-lab__color input { width: 50px; height: 38px; padding: 2px; border: 1px solid #74817c; border-radius: 8px; background: #fff; cursor: pointer; }
 .glass-lab__color b { font-family: var(--ether-font-small); font-size: 13px; font-weight: 500; text-transform: uppercase; }
 .glass-lab__sample { display: flex; min-height: 86px; align-items: end; justify-content: center; gap: 8px; padding: 10px; border-style: solid; border-radius: 12px; color: #fff; text-shadow: var(--ether-glass-text-shadow); }
@@ -356,10 +356,10 @@ button { font: inherit; }
   border-radius: 12px;
 }
 .palette-lab__swatch > span { grid-column: 1 / -1; font-size: 15px; font-weight: 800; }
-.palette-lab__swatch > strong { grid-column: 1 / -1; min-height: 30px; font-size: 11px; font-weight: 600; line-height: 1.3; opacity: .9; }
+.palette-lab__swatch > strong { grid-column: 1 / -1; min-height: 30px; font-size: 12px; font-weight: 600; line-height: 1.3; opacity: .9; }
 .palette-lab__swatch input { width: 42px; height: 34px; padding: 2px; border: 1px solid currentColor; border-radius: 7px; background: transparent; cursor: pointer; }
 .palette-lab__swatch b { align-self: center; font-family: var(--ether-font-small); font-size: 12px; font-weight: 500; text-transform: uppercase; }
-.palette-lab__swatch small { grid-column: 1 / -1; font-size: 10px; font-weight: 700; opacity: .9; }
+.palette-lab__swatch small { grid-column: 1 / -1; font-size: 12px; font-weight: 700; opacity: .9; }
 .palette-lab__actions { display: grid; align-content: center; gap: 7px; }
 .palette-lab__actions button { min-height: 36px; padding: 0 12px; border: 1px solid var(--ether-highlight); border-radius: 8px; color: var(--ether-highlight); background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
 .palette-lab__actions button:last-child { color: var(--ether-on-highlight); background: var(--ether-highlight); }

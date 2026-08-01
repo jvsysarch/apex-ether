@@ -99,22 +99,6 @@
 .expanded-layout--dynamics { grid-template-columns: 1.12fr 1fr 1.08fr; }
 .expanded-dynamics-summary .apex-ether-tachometer { padding-bottom: 18px; border-bottom: 1px solid currentColor; }
 .expanded-dynamics-summary .apex-ether-metric-grid { gap: 24px 18px; }
-.expanded-contact-map { position: relative; display: grid; min-height: 455px; place-items: center; }
-.expanded-contact-map__vehicle { position: relative; width: 138px; height: 310px; border: 3px solid currentColor; border-radius: 48px 48px 34px 34px; }
-.expanded-contact-map__vehicle::before,
-.expanded-contact-map__vehicle::after { position: absolute; left: 50%; width: 78px; height: 2px; background: currentColor; content: ''; transform: translateX(-50%); opacity: .45; }
-.expanded-contact-map__vehicle::before { top: 92px; }
-.expanded-contact-map__vehicle::after { bottom: 92px; }
-.expanded-contact-map__vehicle > i { position: absolute; left: 50%; width: 3px; height: 100%; background: currentColor; transform: translateX(-50%); opacity: .22; }
-.expanded-contact-map article { position: absolute; display: grid; min-width: 145px; gap: 3px; padding: 10px 12px; border: 2px solid currentColor; border-radius: 12px; background: rgb(255 255 255 / 12%); }
-.expanded-contact-map article strong { font-family: var(--ether-font-title); font-size: var(--ether-size-title); font-weight: var(--ether-weight-title); }
-.expanded-contact-map article span { font-family: var(--ether-font-subtitle); font-size: var(--ether-size-subtitle); font-weight: var(--ether-weight-subtitle); }
-.expanded-contact-map article small { font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
-.expanded-contact-map article[data-position="front-left"] { top: 28px; left: 0; border-color: var(--ether-positive); }
-.expanded-contact-map article[data-position="front-right"] { top: 28px; right: 0; border-color: var(--ether-positive); }
-.expanded-contact-map article[data-position="rear-left"] { bottom: 28px; left: 0; border-color: var(--ether-warning); }
-.expanded-contact-map article[data-position="rear-right"] { right: 0; bottom: 28px; border-color: var(--ether-info); }
-.apex-ether-panel--solid .expanded-contact-map article { background: #fff; }
 
 .expanded-trend { display: grid; gap: 14px; margin: 0; }
 .expanded-trend figcaption { font-family: var(--ether-font-subtitle); font-size: var(--ether-size-subtitle); font-weight: var(--ether-weight-subtitle); }
@@ -181,9 +165,6 @@
   .expanded-layout { grid-template-columns: 1fr; align-content: start; }
   .expanded-layout > :last-child:nth-child(odd),
   .expanded-layout--learning .expanded-learning-splits { grid-column: auto; grid-row: auto; }
-  .expanded-contact-map article { position: static; width: 100%; }
-  .expanded-contact-map { grid-template-columns: 1fr 1fr; min-height: 0; gap: 10px; }
-  .expanded-contact-map__vehicle { display: none; }
   .expanded-energy-grid,
   .expanded-budget-grid { grid-template-columns: 1fr; }
   .expanded-state-heading { align-items: start; flex-direction: column; }
