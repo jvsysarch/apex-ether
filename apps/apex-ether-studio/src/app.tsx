@@ -699,7 +699,7 @@ function Motivation() {
     ['Costo de render predecible', 'Los datos se publican por segmentos y cada panel escucha únicamente su porción. La frecuencia de la simulación no obliga a redibujar toda la interfaz.'],
   ] as const;
   return <section className="catalog-motivation" id="motivation">
-    <header><span>Motivación</span><h2>La telemetría es compleja.<br />La lectura no debería serlo.</h2><p>Un simulador puede producir cientos de señales por segundo, pero el conductor dispone de instantes para comprenderlas. Apex Ether convierte ese flujo en componentes legibles, configurables y desacoplados.</p></header>
+    <header><span>Motivación</span><h2>La telemetría es compleja.<br />La lectura no debería serlo.</h2><p>Una simulación puede producir cientos de miles de señales por segundo. El conductor sólo necesita las decisivas, presentadas en el instante correcto. Apex Ether transforma ese flujo en componentes legibles, configurables y desacoplados.</p></header>
     <div>{principles.map(([title, text], index) => <article key={title}><b>{String(index + 1).padStart(2, '0')}</b><h3>{title}</h3><p>{text}</p></article>)}</div>
   </section>;
 }
