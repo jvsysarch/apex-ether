@@ -125,11 +125,11 @@ button { font: inherit; }
 
 .typography-lab fieldset {
   display: grid;
-  grid-template-columns: repeat(4, minmax(96px, 1fr)) minmax(250px, 1.35fr);
+  grid-template-columns: repeat(4, minmax(190px, 1fr)) minmax(280px, 1.3fr);
   align-content: start;
-  gap: 10px;
+  gap: 8px 14px;
   min-width: 0;
-  padding: 12px 13px 13px;
+  padding: 9px 12px 11px;
   border: 1px solid rgb(23 34 31 / 16%);
   border-radius: 14px;
   background: #f4f6f5;
@@ -141,13 +141,19 @@ button { font: inherit; }
   font-weight: 700;
 }
 
-.typography-lab label { display: grid; gap: 3px; }
-.typography-lab fieldset label:first-of-type { grid-column: span 2; }
+.typography-lab label {
+  display: grid;
+  grid-template-columns: minmax(84px, auto) minmax(76px, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+.typography-lab fieldset label:first-of-type { grid-column: auto; }
 .typography-lab label > span {
   color: #52615b;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .06em;
+  letter-spacing: .045em;
+  line-height: 1.15;
   text-transform: uppercase;
 }
 
@@ -155,7 +161,7 @@ button { font: inherit; }
 .typography-lab input[type="number"] {
   width: 100%;
   min-width: 0;
-  min-height: 40px;
+  min-height: 38px;
   padding: 0 10px;
   border: 1px solid #74817c;
   border-radius: 8px;
@@ -176,7 +182,7 @@ button { font: inherit; }
   align-content: start;
   gap: 5px;
   min-width: 0;
-  min-height: 150px;
+  min-height: 96px;
   padding: 14px;
   overflow: hidden;
   border: 1px solid rgb(23 34 31 / 14%);
@@ -703,7 +709,7 @@ button { font: inherit; }
 }
 
 @media (max-width: 1120px) {
-  .typography-lab fieldset { grid-template-columns: repeat(4, minmax(96px, 1fr)); }
+  .typography-lab fieldset { grid-template-columns: repeat(2, minmax(230px, 1fr)); }
   .typography-lab__preview { grid-column: 1 / -1; grid-row: auto; min-height: 110px; }
 }
 
@@ -732,8 +738,7 @@ button { font: inherit; }
 @media (max-width: 760px) {
   .typography-lab__content > header { display: grid; grid-template-columns: 1fr; }
   .typography-lab__content > header button { grid-column: 1; grid-row: auto; }
-  .typography-lab fieldset { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .typography-lab fieldset label:first-of-type { grid-column: 1 / -1; }
+  .typography-lab fieldset { grid-template-columns: 1fr; }
   .palette-lab__content { grid-template-columns: repeat(2, minmax(135px, 1fr)); }
   .shadow-lab fieldset,
   .shadow-lab fieldset:nth-child(3) { grid-template-columns: repeat(2, minmax(100px, 1fr)); }

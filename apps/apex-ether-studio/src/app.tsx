@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import {
   ApexEtherInput,
   ApexEtherLeaderboard,
@@ -194,6 +194,47 @@ function TypographyPreview({
   return <div className="typography-lab__preview" data-level={level}>{samples[level]}</div>;
 }
 
+function LabNumberInput({
+  value,
+  min,
+  max,
+  step,
+  onChange,
+}: {
+  readonly value: number;
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  readonly onChange: (value: number) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return undefined;
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      input.focus({ preventScroll: true });
+      const current = Number(input.value);
+      const direction = event.deltaY < 0 ? 1 : -1;
+      const decimalPlaces = step.toString().split('.')[1]?.length ?? 0;
+      const next = Math.min(max, Math.max(min, Number((current + direction * step).toFixed(decimalPlaces))));
+      if (next !== current) onChange(next);
+    };
+    input.addEventListener('wheel', handleWheel, { passive: false });
+    return () => input.removeEventListener('wheel', handleWheel);
+  }, [max, min, onChange, step]);
+  return <input
+    ref={inputRef}
+    type="number"
+    min={min}
+    max={max}
+    step={step}
+    value={value}
+    onChange={event => onChange(Number(event.target.value))}
+  />;
+}
+
 function TypographyLab({
   value,
   onChange,
@@ -316,58 +357,53 @@ function TypographyLab({
               </select>
             </label>
             <label>
-              <span>Tamaño · px CSS</span>
-              <input
-                type="number"
+              <span>Tamaño · px</span>
+              <LabNumberInput
                 min={fontSizeRanges[selectedLevel].min}
                 max={fontSizeRanges[selectedLevel].max}
-                step="1"
+                step={1}
                 value={value[selectedLevel].size}
-                onChange={event => update(selectedLevel, { size: Number(event.target.value) })}
+                onChange={size => update(selectedLevel, { size })}
               />
             </label>
             <label>
               <span>Interlineado</span>
-              <input
-                type="number"
-                min="0.75"
-                max="2"
-                step="0.01"
+              <LabNumberInput
+                min={0.75}
+                max={2}
+                step={0.01}
                 value={value[selectedLevel].lineHeight}
-                onChange={event => update(selectedLevel, { lineHeight: Number(event.target.value) })}
+                onChange={lineHeight => update(selectedLevel, { lineHeight })}
               />
             </label>
             <label>
-              <span>Espaciado · em</span>
-              <input
-                type="number"
-                min="-0.12"
-                max="0.2"
-                step="0.005"
+              <span>Tracking · em</span>
+              <LabNumberInput
+                min={-0.12}
+                max={0.2}
+                step={0.005}
                 value={value[selectedLevel].letterSpacing}
-                onChange={event => update(selectedLevel, { letterSpacing: Number(event.target.value) })}
+                onChange={letterSpacing => update(selectedLevel, { letterSpacing })}
               />
             </label>
             <label>
               <span>Margen superior · px</span>
-              <input
-                type="number"
-                min="0"
-                max="48"
-                step="1"
+              <LabNumberInput
+                min={0}
+                max={48}
+                step={1}
                 value={value[selectedLevel].marginBefore}
-                onChange={event => update(selectedLevel, { marginBefore: Number(event.target.value) })}
+                onChange={marginBefore => update(selectedLevel, { marginBefore })}
               />
             </label>
             <label>
               <span>Margen inferior · px</span>
-              <input
-                type="number"
-                min="0"
-                max="48"
-                step="1"
+              <LabNumberInput
+                min={0}
+                max={48}
+                step={1}
                 value={value[selectedLevel].marginAfter}
-                onChange={event => update(selectedLevel, { marginAfter: Number(event.target.value) })}
+                onChange={marginAfter => update(selectedLevel, { marginAfter })}
               />
             </label>
             <TypographyPreview level={selectedLevel} value={value[selectedLevel]} />
