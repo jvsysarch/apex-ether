@@ -694,7 +694,7 @@ function Library() {
 
 function Motivation() {
   const principles = [
-    ['Frontera independiente', 'La simulación produce datos; Ether decide cómo presentarlos. Ningún panel necesita conocer el motor físico, la escena o el ciclo de juego.'],
+    ['Frontera independiente', 'La aplicación anfitriona decide qué mostrar. Ether lo representa con una jerarquía consistente, un costo de render acotado y sin añadir latencia perceptible. Ningún panel necesita conocer el motor físico, la escena o el ciclo de juego.'],
     ['Jerarquía antes que volumen', 'La información se organiza por decisiones del conductor. Cada composición muestra lo necesario para carrera, estrategia, diagnóstico o aprendizaje.'],
     ['Costo de render predecible', 'Los datos se publican por segmentos y cada panel escucha únicamente su porción. La frecuencia de la simulación no obliga a redibujar toda la interfaz.'],
   ] as const;
