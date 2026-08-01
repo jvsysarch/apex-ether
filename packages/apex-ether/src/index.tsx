@@ -705,14 +705,20 @@ export const ApexEtherWheelContactGrid = memo(({
         const labels = labelsByWheel[wheel.id];
         const slipPercent = wheel.slipPercent ?? Math.max(0, 100 - wheel.gripPercent);
         const steeringAngle = wheel.steeringAngleDeg ?? 0;
+        const compression = Math.min(1, Math.max(0, wheel.compression ?? 0));
+        const steeredWheel = wheel.id === 'FL' || wheel.id === 'FR';
         return <article
           key={wheel.id}
           data-tone={tone}
           aria-label={`${labels.full}: ${wheelStatusLabel(tone, locale)}, ${wheel.loadKn.toFixed(1)} kilonewtons`}
         >
           <div><strong>{labels.short}</strong><b>{wheel.loadKn.toFixed(1)} kN</b></div>
-          <span>{wheelStatusLabel(tone, locale)}</span>
-          <small>Slip {slipPercent.toFixed(1)}% · {etherText(locale, 'giro', 'steer')} {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
+          {tone !== 'positive' ? <span>{wheelStatusLabel(tone, locale)}</span> : null}
+          <dl>
+            <div><dt>Slip</dt><dd>{slipPercent.toFixed(1)}%</dd></div>
+            <div><dt>{etherText(locale, 'Compresión', 'Compression')}</dt><dd>{Math.round(compression * 100)}%</dd></div>
+            {steeredWheel ? <div data-wide><dt>{etherText(locale, 'Dirección', 'Steering')}</dt><dd>{steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</dd></div> : null}
+          </dl>
           <i aria-hidden="true" />
         </article>;
       })}

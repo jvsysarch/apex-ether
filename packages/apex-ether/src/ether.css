@@ -1348,7 +1348,7 @@
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: 92px;
+  min-height: 126px;
   box-sizing: border-box;
   align-content: start;
   gap: 3px;
@@ -1392,6 +1392,51 @@
   font-style: normal;
   letter-spacing: var(--ether-letter-spacing-small);
   line-height: var(--ether-line-height-small);
+}
+
+.apex-ether-wheel-contact-grid__items dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 12px;
+  padding: 0;
+  margin: 3px 0 0;
+}
+
+.apex-ether-wheel-contact-grid__items dl > div {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.apex-ether-wheel-contact-grid__items dl > div[data-wide] {
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.apex-ether-wheel-contact-grid__items dt,
+.apex-ether-wheel-contact-grid__items dd {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.apex-ether-wheel-contact-grid__items dt {
+  font-family: var(--ether-font-small);
+  font-size: var(--ether-size-small);
+  font-weight: var(--ether-weight-small);
+  letter-spacing: var(--ether-letter-spacing-small);
+  line-height: var(--ether-line-height-small);
+  opacity: .82;
+}
+
+.apex-ether-wheel-contact-grid__items dd {
+  font-family: var(--ether-font-subtitle);
+  font-size: var(--ether-size-subtitle);
+  font-weight: var(--ether-weight-subtitle);
+  letter-spacing: var(--ether-letter-spacing-subtitle);
+  line-height: var(--ether-line-height-subtitle);
 }
 
 .apex-ether-wheel-contact-grid__items > article > i {
