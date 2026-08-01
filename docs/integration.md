@@ -157,3 +157,15 @@ Ambos modos comparten estructura, escala tipográfica y semántica. El host pued
 5. Convertir la composición validada en un preset declarativo.
 
 Este recorrido conserva una frontera clara y permite encontrar el costo de cada grupo de datos antes de construir un HUD completo.
+
+## Integración disponible en Apex Drive
+
+Drive implementa la frontera en `apex-drive/src/ui/ether`: contrato propio, adaptador, store segmentado y runtime React. Ether no importa tipos de física ni conoce el bucle de simulación.
+
+El flujo activo es:
+
+```text
+Apex Physics / carrera → ApexHudAdapter → ApexHudStore → ApexEtherHudRuntime → componentes Ether
+```
+
+El adaptador publica conducción a 30 Hz y estado a 10 Hz. Además, consulta la demanda derivada de los paneles visibles antes de solicitar un snapshot de física. La composición puede usarse localmente en Drive con `?ether=true`; ese modo desconecta la UI técnica anterior para evitar dos HUD superpuestos.

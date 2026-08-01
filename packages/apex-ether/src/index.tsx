@@ -64,10 +64,8 @@ export interface ApexEtherRace {
   readonly sectorCount: number;
 }
 
-export interface ApexEtherWheel {
+export interface ApexEtherContactWheel {
   readonly id: 'FL' | 'FR' | 'RL' | 'RR';
-  readonly temperatureC: number;
-  readonly pressurePsi: number;
   readonly loadKn: number;
   readonly gripPercent: number;
   /** Percentage of longitudinal/lateral slip reported by the host. */
@@ -77,6 +75,11 @@ export interface ApexEtherWheel {
   /** Normalized suspension compression, from 0 to 1. */
   readonly compression?: number;
   readonly tone?: ApexEtherTone;
+}
+
+export interface ApexEtherWheel extends ApexEtherContactWheel {
+  readonly temperatureC: number;
+  readonly pressurePsi: number;
 }
 
 export interface ApexEtherRoutePoint { readonly x: number; readonly y: number; }
@@ -355,7 +358,7 @@ export const ApexEtherWheelHealth = memo(({ wheels, mode = 'solid' }: { wheels: 
   </ApexEtherSurface>
 ));
 
-const vehicleWheelLabels: Record<ApexEtherWheel['id'], { readonly short: string; readonly full: string }> = {
+const vehicleWheelLabels: Record<ApexEtherContactWheel['id'], { readonly short: string; readonly full: string }> = {
   FL: { short: 'DI', full: 'Delantera izquierda' },
   FR: { short: 'DD', full: 'Delantera derecha' },
   RL: { short: 'TI', full: 'Trasera izquierda' },
@@ -377,7 +380,7 @@ export const ApexEtherVehicleContact = memo(({
   wheels,
   mode = 'glass',
 }: {
-  readonly wheels: readonly ApexEtherWheel[];
+  readonly wheels: readonly ApexEtherContactWheel[];
   readonly mode?: ApexEtherSurfaceMode;
 }) => (
   <ApexEtherSurface title="Contacto y carga" eyebrow="Vista del vehículo" mode={mode} className="apex-ether-vehicle-contact">
