@@ -70,6 +70,12 @@ export interface ApexEtherWheel {
   readonly pressurePsi: number;
   readonly loadKn: number;
   readonly gripPercent: number;
+  /** Percentage of longitudinal/lateral slip reported by the host. */
+  readonly slipPercent?: number;
+  /** Visual steering angle for the wheel representation. */
+  readonly steeringAngleDeg?: number;
+  /** Normalized suspension compression, from 0 to 1. */
+  readonly compression?: number;
   readonly tone?: ApexEtherTone;
 }
 
@@ -315,6 +321,69 @@ export const ApexEtherObjectives = memo(({ items, mode = 'glass' }: { items: rea
 export const ApexEtherWheelHealth = memo(({ wheels, mode = 'solid' }: { wheels: readonly ApexEtherWheel[]; mode?: ApexEtherSurfaceMode }) => (
   <ApexEtherSurface title="Neumáticos" eyebrow="Contacto" mode={mode} className="apex-ether-wheels">
     <div>{wheels.map(wheel => <article key={wheel.id} data-tone={wheel.tone ?? 'neutral'}><b>{wheel.id}</b><strong>{Math.round(wheel.temperatureC)}°</strong><span>{wheel.pressurePsi.toFixed(1)} psi · {wheel.loadKn.toFixed(1)} kN</span><i><em style={{ width: `${wheel.gripPercent}%` }} /></i></article>)}</div>
+  </ApexEtherSurface>
+));
+
+const vehicleWheelLabels: Record<ApexEtherWheel['id'], { readonly short: string; readonly full: string }> = {
+  FL: { short: 'DI', full: 'Delantera izquierda' },
+  FR: { short: 'DD', full: 'Delantera derecha' },
+  RL: { short: 'TI', full: 'Trasera izquierda' },
+  RR: { short: 'TD', full: 'Trasera derecha' },
+};
+
+const wheelStatusLabel = (tone: ApexEtherTone) => {
+  switch (tone) {
+    case 'positive': return 'Adherencia estable';
+    case 'info': return 'Cerca del límite';
+    case 'warning': return 'Deslizamiento';
+    case 'danger': return 'Pérdida de agarre';
+    default: return 'Contacto estable';
+  }
+};
+
+/** Spatial, top-down vehicle contact view with slip and suspension state per wheel. */
+export const ApexEtherVehicleContact = memo(({
+  wheels,
+  mode = 'glass',
+}: {
+  readonly wheels: readonly ApexEtherWheel[];
+  readonly mode?: ApexEtherSurfaceMode;
+}) => (
+  <ApexEtherSurface title="Contacto y carga" eyebrow="Vista del vehículo" mode={mode} className="apex-ether-vehicle-contact">
+    <div className="apex-ether-vehicle-contact__map" aria-label="Contacto, dirección y compresión de las cuatro ruedas">
+      <div className="apex-ether-vehicle-contact__vehicle" aria-hidden="true">
+        <i /><i /><span /><b />
+      </div>
+      {wheels.map(wheel => {
+        const tone = wheel.tone ?? 'neutral';
+        const labels = vehicleWheelLabels[wheel.id];
+        const compression = Math.min(1, Math.max(0, wheel.compression ?? 0));
+        const steeringAngle = wheel.steeringAngleDeg ?? 0;
+        const slipPercent = wheel.slipPercent ?? Math.max(0, 100 - wheel.gripPercent);
+        const wheelStyle = {
+          '--apex-ether-wheel-angle': `${steeringAngle}deg`,
+          '--apex-ether-compression': compression,
+        } as CSSProperties;
+        return <article
+          key={wheel.id}
+          data-wheel={wheel.id}
+          data-tone={tone}
+          style={wheelStyle}
+          aria-label={`${labels.full}: ${wheelStatusLabel(tone)}, carga ${wheel.loadKn.toFixed(1)} kilonewtons, deslizamiento ${slipPercent.toFixed(1)} por ciento, compresión ${Math.round(compression * 100)} por ciento`}
+        >
+          <div className="apex-ether-vehicle-contact__hardware" aria-hidden="true">
+            <div className="apex-ether-vehicle-contact__damper"><i><b /></i><span>{Math.round(compression * 100)}%</span></div>
+            <i className="apex-ether-vehicle-contact__tire"><b /><b /><b /></i>
+          </div>
+          <div className="apex-ether-vehicle-contact__readout">
+            <div><strong>{labels.short}</strong><b>{wheel.loadKn.toFixed(1)} kN</b></div>
+            <span>{wheelStatusLabel(tone)}</span>
+            <small>Slip {slipPercent.toFixed(1)}% · dirección {steeringAngle > 0 ? '+' : ''}{steeringAngle.toFixed(1)}°</small>
+          </div>
+          <i className="apex-ether-vehicle-contact__state" aria-hidden="true" />
+        </article>;
+      })}
+    </div>
   </ApexEtherSurface>
 ));
 

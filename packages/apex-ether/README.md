@@ -73,6 +73,7 @@ export function SessionSummary() {
 - `ApexEtherLeaderboard`
 - `ApexEtherObjectives`
 - `ApexEtherWheelHealth`
+- `ApexEtherVehicleContact`
 - `ApexEtherRoute`
 - `ApexEtherInput`
 

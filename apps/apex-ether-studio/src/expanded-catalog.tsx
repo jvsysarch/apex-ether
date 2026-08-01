@@ -6,6 +6,7 @@ import {
   ApexEtherPanelRow,
   ApexEtherProgress,
   ApexEtherSurface,
+  ApexEtherVehicleContact,
   type ApexEtherSurfaceMode,
   type ApexEtherTone,
 } from '@jvsysarch/apex-ether';
@@ -107,26 +108,15 @@ function TimingView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
 }
 
 const wheelStates = [
-  { id: 'FL', load: '4,2 kN', slip: '2,8% · 1,4°', tone: 'positive', position: 'front-left' },
-  { id: 'FR', load: '4,5 kN', slip: '3,1% · 1,8°', tone: 'positive', position: 'front-right' },
-  { id: 'RL', load: '3,8 kN', slip: '11,2% · 5,7°', tone: 'warning', position: 'rear-left' },
-  { id: 'RR', load: '3,7 kN', slip: '4,8% · 2,3°', tone: 'info', position: 'rear-right' },
+  { id: 'FL', temperatureC: 87, pressurePsi: 27.6, loadKn: 4.2, gripPercent: 97.2, slipPercent: 2.8, steeringAngleDeg: 7, compression: .58, tone: 'positive' },
+  { id: 'FR', temperatureC: 90, pressurePsi: 27.8, loadKn: 4.5, gripPercent: 96.9, slipPercent: 3.1, steeringAngleDeg: 6.4, compression: .64, tone: 'positive' },
+  { id: 'RL', temperatureC: 94, pressurePsi: 28.1, loadKn: 3.8, gripPercent: 88.8, slipPercent: 11.2, steeringAngleDeg: 0, compression: .83, tone: 'warning' },
+  { id: 'RR', temperatureC: 92, pressurePsi: 28, loadKn: 3.7, gripPercent: 95.2, slipPercent: 4.8, steeringAngleDeg: 0, compression: .61, tone: 'info' },
 ] as const;
 
-function ContactMap() {
-  return <div className="expanded-contact-map" aria-label="Contacto de las cuatro ruedas">
-    <div className="expanded-contact-map__vehicle"><i /><i /><i /></div>
-    {wheelStates.map(wheel => <article key={wheel.id} data-position={wheel.position} data-tone={wheel.tone}>
-      <strong>{wheel.id}</strong><span>{wheel.load}</span><small>{wheel.slip}</small>
-    </article>)}
-  </div>;
-}
-
 function DynamicsView({ mode }: { readonly mode: ApexEtherSurfaceMode }) {
-  return <div className="expanded-layout expanded-layout--dynamics">
-    <ApexEtherSurface title="Contacto y carga" eyebrow="Vista del vehículo" mode={mode} className="expanded-contact">
-      <ContactMap />
-    </ApexEtherSurface>
+  return <div className="expanded-layout expanded-layout--dynamics" id="vehicle-contact">
+    <ApexEtherVehicleContact wheels={wheelStates} mode={mode} />
     <ApexEtherSurface title="Dinámica instantánea" eyebrow="Valores de decisión" mode={mode} className="expanded-dynamics-summary">
       <ApexEtherMetricGrid columns={2}>
         <ApexEtherMetric label="Dirección" value="+7,0" unit="°" tone="info" />
