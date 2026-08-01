@@ -1378,7 +1378,7 @@
   min-width: 0;
   margin: 0;
   font-family: var(--ether-font-subtitle);
-  font-size: var(--ether-size-subtitle);
+  font-size: max(15px, calc(var(--ether-size-subtitle) * .9));
   font-weight: var(--ether-weight-subtitle);
   letter-spacing: var(--ether-letter-spacing-subtitle);
   line-height: var(--ether-line-height-subtitle);
@@ -1431,7 +1431,7 @@
 
 .apex-ether-wheel-contact-grid__items dt {
   font-family: var(--ether-font-small);
-  font-size: var(--ether-size-small);
+  font-size: max(11px, calc(var(--ether-size-small) * .92));
   font-weight: var(--ether-weight-small);
   letter-spacing: var(--ether-letter-spacing-small);
   line-height: var(--ether-line-height-small);
@@ -1440,7 +1440,7 @@
 
 .apex-ether-wheel-contact-grid__items dd {
   font-family: var(--ether-font-subtitle);
-  font-size: var(--ether-size-subtitle);
+  font-size: max(14px, calc(var(--ether-size-subtitle) * .88));
   font-weight: var(--ether-weight-subtitle);
   letter-spacing: var(--ether-letter-spacing-subtitle);
   line-height: var(--ether-line-height-subtitle);
