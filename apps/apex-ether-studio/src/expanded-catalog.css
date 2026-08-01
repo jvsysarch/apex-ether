@@ -96,7 +96,7 @@
 .expanded-layout--timing { grid-template-columns: 1.08fr .92fr .85fr; }
 .expanded-timing-now .apex-ether-metric:first-child strong { font-size: clamp(52px, 5vw, 88px); }
 
-.expanded-layout--dynamics { grid-template-columns: 1.4fr .9fr 1fr; }
+.expanded-layout--dynamics { grid-template-columns: 1.28fr .94fr 1fr; }
 .expanded-vehicle-stack {
   display: grid;
   align-content: center;
