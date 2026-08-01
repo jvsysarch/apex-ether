@@ -50,7 +50,7 @@ const fontOptions = Object.freeze([
 
 const fontWeights = Object.freeze([400, 500, 600, 700, 800]);
 const figureFontOptions = Object.freeze(['Manrope', 'Plus Jakarta Sans']);
-type TypographyLevel = 'title' | 'hero' | 'figures' | 'subtitle' | 'small';
+type TypographyLevel = 'title' | 'hero' | 'speed' | 'figures' | 'subtitle' | 'small';
 interface TypographyValue {
   readonly family: string;
   readonly weight: number;
@@ -143,6 +143,7 @@ const paletteLabels = {
 const fontSizes: Readonly<Record<TypographyLevel, readonly number[]>> = Object.freeze({
   title: Object.freeze([16, 18, 20, 22, 24, 26, 28, 30]),
   hero: Object.freeze([24, 28, 32, 36, 40, 44, 48, 52]),
+  speed: Object.freeze([64, 72, 80, 88, 96, 104, 112, 120]),
   figures: Object.freeze([28, 32, 36, 40, 44, 48, 52, 56]),
   subtitle: Object.freeze([14, 15, 16, 17, 18, 19, 20, 22]),
   small: Object.freeze([10, 11, 12, 13, 14, 15, 16, 17]),
@@ -151,6 +152,7 @@ const fontSizes: Readonly<Record<TypographyLevel, readonly number[]>> = Object.f
 const defaultTypography: TypographySettings = Object.freeze({
   title: Object.freeze({ family: 'Manrope', weight: 700, size: 28, lineHeight: 1.08, letterSpacing: -0.03, marginBefore: 0, marginAfter: 0 }),
   hero: Object.freeze({ family: 'Space Grotesk', weight: 500, size: 40, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
+  speed: Object.freeze({ family: 'Manrope', weight: 500, size: 96, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
   figures: Object.freeze({ family: 'Manrope', weight: 500, size: 40, lineHeight: 0.92, letterSpacing: -0.065, marginBefore: 0, marginAfter: 0 }),
   subtitle: Object.freeze({ family: 'Nunito Sans', weight: 500, size: 19, lineHeight: 1.25, letterSpacing: 0, marginBefore: 0, marginAfter: 0 }),
   small: Object.freeze({ family: 'Inter', weight: 500, size: 16, lineHeight: 1.25, letterSpacing: 0.065, marginBefore: 0, marginAfter: 0 }),
@@ -159,6 +161,7 @@ const defaultTypography: TypographySettings = Object.freeze({
 const typographyLabels: Readonly<Record<TypographyLevel, string>> = Object.freeze({
   title: 'Títulos',
   hero: 'Panel hero',
+  speed: 'Velocímetro',
   figures: 'Cifras y telemetría',
   subtitle: 'Subtítulos y filas',
   small: 'Etiquetas y unidades',
@@ -183,7 +186,8 @@ function TypographyPreview({
   const samples: Readonly<Record<TypographyLevel, ReactNode>> = {
     title: <><span>DIAGNÓSTICO</span><strong style={selectedStyle}>Estado del vehículo</strong></>,
     hero: <><span>VEHÍCULO</span><strong style={selectedStyle}>Apex GT</strong><small>Tracción trasera · Sport+</small></>,
-    figures: <><span>VELOCIDAD</span><div><strong style={selectedStyle}>278</strong><small>km/h</small></div></>,
+    speed: <><span>VELOCIDAD</span><div><strong style={selectedStyle}>278</strong><small>km/h</small></div></>,
+    figures: <><span>RÉGIMEN</span><div><strong style={selectedStyle}>6,8</strong><small>RPM ×1000</small></div></>,
     subtitle: <><span>CONFIGURACIÓN ACTIVA</span><strong style={selectedStyle}>Tracción trasera · Sport+</strong></>,
     small: <><span style={selectedStyle}>TEMPERATURA</span><div><strong>85</strong><small style={selectedStyle}>°C</small></div></>,
   };
@@ -201,6 +205,7 @@ function TypographyLab({
   const [isOpen, setIsOpen] = useState(
     () => new URLSearchParams(window.location.search).get('section') === 'typography',
   );
+  const [selectedLevel, setSelectedLevel] = useState<TypographyLevel>('speed');
   const update = (
     level: TypographyLevel,
     patch: Partial<TypographyValue>,
@@ -225,6 +230,13 @@ function TypographyLab({
       `  --ether-letter-spacing-hero: ${value.hero.letterSpacing}em;`,
       `  --ether-margin-before-hero: ${value.hero.marginBefore}px;`,
       `  --ether-margin-after-hero: ${value.hero.marginAfter}px;`,
+      `  --ether-font-speed: "${value.speed.family}", sans-serif;`,
+      `  --ether-weight-speed: ${value.speed.weight};`,
+      `  --ether-size-speed: ${value.speed.size}px;`,
+      `  --ether-line-height-speed: ${value.speed.lineHeight};`,
+      `  --ether-letter-spacing-speed: ${value.speed.letterSpacing}em;`,
+      `  --ether-margin-before-speed: ${value.speed.marginBefore}px;`,
+      `  --ether-margin-after-speed: ${value.speed.marginAfter}px;`,
       `  --ether-font-figures: "${value.figures.family}", sans-serif;`,
       `  --ether-weight-figures: ${value.figures.weight};`,
       `  --ether-size-figures: ${value.figures.size}px;`,
@@ -257,7 +269,7 @@ function TypographyLab({
     }
   };
   return <details className="typography-lab" open={isOpen} onToggle={event => setIsOpen(event.currentTarget.open)}>
-    <summary><span>Tipografía</span><b>Cinco niveles · forma, escala y ritmo</b></summary>
+    <summary><span>Tipografía</span><b>Seis niveles · forma, escala y ritmo</b></summary>
     <div className="typography-lab__content">
       <header>
         <div><span>APEX ETHER</span><strong>Jerarquía de lectura</strong></div>
@@ -274,16 +286,22 @@ function TypographyLab({
         </output>
       </header>
       <div className="typography-lab__controls">
-        {(Object.keys(typographyLabels) as TypographyLevel[]).map(level => (
-          <fieldset key={level}>
-            <legend>{typographyLabels[level]}</legend>
+        <nav className="typography-lab__level-tabs" aria-label="Nivel tipográfico">
+          {(Object.keys(typographyLabels) as TypographyLevel[]).map(level => (
+            <button key={level} type="button" aria-pressed={selectedLevel === level} onClick={() => setSelectedLevel(level)}>
+              {typographyLabels[level]}
+            </button>
+          ))}
+        </nav>
+        <fieldset>
+            <legend>{typographyLabels[selectedLevel]}</legend>
             <label>
               <span>Familia</span>
               <select
-                value={value[level].family}
-                onChange={event => update(level, { family: event.target.value })}
+                value={value[selectedLevel].family}
+                onChange={event => update(selectedLevel, { family: event.target.value })}
               >
-                {(level === 'figures' ? figureFontOptions : fontOptions).map(font => (
+                {(selectedLevel === 'figures' || selectedLevel === 'speed' ? figureFontOptions : fontOptions).map(font => (
                   <option key={font} value={font}>{font}</option>
                 ))}
               </select>
@@ -291,8 +309,8 @@ function TypographyLab({
             <label>
               <span>Peso</span>
               <select
-                value={value[level].weight}
-                onChange={event => update(level, { weight: Number(event.target.value) })}
+                value={value[selectedLevel].weight}
+                onChange={event => update(selectedLevel, { weight: Number(event.target.value) })}
               >
                 {fontWeights.map(weight => <option key={weight} value={weight}>{weight}</option>)}
               </select>
@@ -300,10 +318,10 @@ function TypographyLab({
             <label>
               <span>Tamaño</span>
               <select
-                value={value[level].size}
-                onChange={event => update(level, { size: Number(event.target.value) })}
+                value={value[selectedLevel].size}
+                onChange={event => update(selectedLevel, { size: Number(event.target.value) })}
               >
-                {fontSizes[level].map(size => <option key={size} value={size}>{size} px</option>)}
+                {fontSizes[selectedLevel].map(size => <option key={size} value={size}>{size} px</option>)}
               </select>
             </label>
             <label>
@@ -313,8 +331,8 @@ function TypographyLab({
                 min="0.75"
                 max="2"
                 step="0.01"
-                value={value[level].lineHeight}
-                onChange={event => update(level, { lineHeight: Number(event.target.value) })}
+                value={value[selectedLevel].lineHeight}
+                onChange={event => update(selectedLevel, { lineHeight: Number(event.target.value) })}
               />
             </label>
             <label>
@@ -324,8 +342,8 @@ function TypographyLab({
                 min="-0.12"
                 max="0.2"
                 step="0.005"
-                value={value[level].letterSpacing}
-                onChange={event => update(level, { letterSpacing: Number(event.target.value) })}
+                value={value[selectedLevel].letterSpacing}
+                onChange={event => update(selectedLevel, { letterSpacing: Number(event.target.value) })}
               />
             </label>
             <label>
@@ -335,8 +353,8 @@ function TypographyLab({
                 min="0"
                 max="48"
                 step="1"
-                value={value[level].marginBefore}
-                onChange={event => update(level, { marginBefore: Number(event.target.value) })}
+                value={value[selectedLevel].marginBefore}
+                onChange={event => update(selectedLevel, { marginBefore: Number(event.target.value) })}
               />
             </label>
             <label>
@@ -346,13 +364,12 @@ function TypographyLab({
                 min="0"
                 max="48"
                 step="1"
-                value={value[level].marginAfter}
-                onChange={event => update(level, { marginAfter: Number(event.target.value) })}
+                value={value[selectedLevel].marginAfter}
+                onChange={event => update(selectedLevel, { marginAfter: Number(event.target.value) })}
               />
             </label>
-            <TypographyPreview level={level} value={value[level]} />
+            <TypographyPreview level={selectedLevel} value={value[selectedLevel]} />
           </fieldset>
-        ))}
       </div>
     </div>
   </details>;
@@ -734,36 +751,43 @@ export function ApexEtherStudio() {
   const typographyStyle = {
     '--ether-font-title': `"${typography.title.family}", sans-serif`,
     '--ether-font-hero': `"${typography.hero.family}", sans-serif`,
+    '--ether-font-speed': `"${typography.speed.family}", sans-serif`,
     '--ether-font-figures': `"${typography.figures.family}", sans-serif`,
     '--ether-font-subtitle': `"${typography.subtitle.family}", sans-serif`,
     '--ether-font-small': `"${typography.small.family}", sans-serif`,
     '--ether-weight-title': typography.title.weight,
     '--ether-weight-hero': typography.hero.weight,
+    '--ether-weight-speed': typography.speed.weight,
     '--ether-weight-figures': typography.figures.weight,
     '--ether-weight-subtitle': typography.subtitle.weight,
     '--ether-weight-small': typography.small.weight,
     '--ether-size-title': `${typography.title.size}px`,
     '--ether-size-hero': `${typography.hero.size}px`,
+    '--ether-size-speed': `${typography.speed.size}px`,
     '--ether-size-figures': `${typography.figures.size}px`,
     '--ether-size-subtitle': `${typography.subtitle.size}px`,
     '--ether-size-small': `${typography.small.size}px`,
     '--ether-line-height-title': typography.title.lineHeight,
     '--ether-line-height-hero': typography.hero.lineHeight,
+    '--ether-line-height-speed': typography.speed.lineHeight,
     '--ether-line-height-figures': typography.figures.lineHeight,
     '--ether-line-height-subtitle': typography.subtitle.lineHeight,
     '--ether-line-height-small': typography.small.lineHeight,
     '--ether-letter-spacing-title': `${typography.title.letterSpacing}em`,
     '--ether-letter-spacing-hero': `${typography.hero.letterSpacing}em`,
+    '--ether-letter-spacing-speed': `${typography.speed.letterSpacing}em`,
     '--ether-letter-spacing-figures': `${typography.figures.letterSpacing}em`,
     '--ether-letter-spacing-subtitle': `${typography.subtitle.letterSpacing}em`,
     '--ether-letter-spacing-small': `${typography.small.letterSpacing}em`,
     '--ether-margin-before-title': `${typography.title.marginBefore}px`,
     '--ether-margin-before-hero': `${typography.hero.marginBefore}px`,
+    '--ether-margin-before-speed': `${typography.speed.marginBefore}px`,
     '--ether-margin-before-figures': `${typography.figures.marginBefore}px`,
     '--ether-margin-before-subtitle': `${typography.subtitle.marginBefore}px`,
     '--ether-margin-before-small': `${typography.small.marginBefore}px`,
     '--ether-margin-after-title': `${typography.title.marginAfter}px`,
     '--ether-margin-after-hero': `${typography.hero.marginAfter}px`,
+    '--ether-margin-after-speed': `${typography.speed.marginAfter}px`,
     '--ether-margin-after-figures': `${typography.figures.marginAfter}px`,
     '--ether-margin-after-subtitle': `${typography.subtitle.marginAfter}px`,
     '--ether-margin-after-small': `${typography.small.marginAfter}px`,

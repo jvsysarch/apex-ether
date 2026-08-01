@@ -15,36 +15,43 @@
   --ether-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ether-font-title: "Manrope", sans-serif;
   --ether-font-hero: "Space Grotesk", sans-serif;
+  --ether-font-speed: "Manrope", sans-serif;
   --ether-font-figures: "Manrope", sans-serif;
   --ether-font-subtitle: "Nunito Sans", sans-serif;
   --ether-font-small: "Inter", sans-serif;
   --ether-weight-title: 700;
   --ether-weight-hero: 500;
+  --ether-weight-speed: 500;
   --ether-weight-figures: 500;
   --ether-weight-subtitle: 500;
   --ether-weight-small: 500;
   --ether-size-title: 28px;
   --ether-size-hero: 40px;
+  --ether-size-speed: 96px;
   --ether-size-figures: 40px;
   --ether-size-subtitle: 19px;
   --ether-size-small: 16px;
   --ether-line-height-title: 1.08;
   --ether-line-height-hero: .92;
+  --ether-line-height-speed: .92;
   --ether-line-height-figures: .92;
   --ether-line-height-subtitle: 1.25;
   --ether-line-height-small: 1.25;
   --ether-letter-spacing-title: -.03em;
   --ether-letter-spacing-hero: -.065em;
+  --ether-letter-spacing-speed: -.065em;
   --ether-letter-spacing-figures: -.065em;
   --ether-letter-spacing-subtitle: 0em;
   --ether-letter-spacing-small: .065em;
   --ether-margin-before-title: 0px;
   --ether-margin-before-hero: 0px;
+  --ether-margin-before-speed: 0px;
   --ether-margin-before-figures: 0px;
   --ether-margin-before-subtitle: 0px;
   --ether-margin-before-small: 0px;
   --ether-margin-after-title: 0px;
   --ether-margin-after-hero: 0px;
+  --ether-margin-after-speed: 0px;
   --ether-margin-after-figures: 0px;
   --ether-margin-after-subtitle: 0px;
   --ether-margin-after-small: 0px;
@@ -344,12 +351,13 @@
 }
 
 .apex-ether-speed__main strong {
-  font-size: clamp(62px, calc(var(--ether-size-figures) * 2.4), 120px);
-  font-family: var(--ether-font-figures);
-  font-weight: var(--ether-weight-figures);
+  margin-block: var(--ether-margin-before-speed) var(--ether-margin-after-speed);
+  font-size: var(--ether-size-speed);
+  font-family: var(--ether-font-speed);
+  font-weight: var(--ether-weight-speed);
   font-variant-numeric: tabular-nums;
-  letter-spacing: var(--ether-letter-spacing-figures);
-  line-height: var(--ether-line-height-figures);
+  letter-spacing: var(--ether-letter-spacing-speed);
+  line-height: var(--ether-line-height-speed);
 }
 
 .apex-ether-speed__main span {

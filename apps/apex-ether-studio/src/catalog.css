@@ -91,13 +91,41 @@ button { font: inherit; }
 
 .typography-lab__controls {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-content: start;
   gap: 12px;
+}
+
+.typography-lab__level-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.typography-lab__level-tabs button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid rgb(23 34 31 / 18%);
+  border-radius: 8px;
+  color: var(--ether-ink);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.typography-lab__level-tabs button[aria-pressed="true"] {
+  border-color: var(--ether-highlight);
+  background: var(--ether-highlight);
+}
+
+.typography-lab__level-tabs button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ether-highlight) 32%, transparent);
+  outline-offset: 2px;
 }
 
 .typography-lab fieldset {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(96px, 1fr)) minmax(250px, 1.35fr);
   align-content: start;
   gap: 10px;
   min-width: 0;
@@ -114,7 +142,7 @@ button { font: inherit; }
 }
 
 .typography-lab label { display: grid; gap: 3px; }
-.typography-lab fieldset label:first-of-type { grid-column: 1 / -1; }
+.typography-lab fieldset label:first-of-type { grid-column: span 2; }
 .typography-lab label > span {
   color: #52615b;
   font-size: 12px;
@@ -143,12 +171,12 @@ button { font: inherit; }
 .typography-lab input[type="number"]:focus-visible { outline: 3px solid color-mix(in srgb, var(--ether-highlight) 32%, transparent); outline-offset: 2px; }
 .typography-lab__preview {
   display: grid;
-  grid-column: 1 / -1;
+  grid-column: 5;
+  grid-row: 1 / span 2;
   align-content: start;
   gap: 5px;
   min-width: 0;
-  min-height: 178px;
-  margin-top: 2px;
+  min-height: 150px;
   padding: 14px;
   overflow: hidden;
   border: 1px solid rgb(23 34 31 / 14%);
@@ -188,6 +216,7 @@ button { font: inherit; }
 
 .typography-lab__preview > div > strong { color: var(--ether-ink); line-height: .94; }
 .typography-lab__preview > div > small { color: #52615b; font-family: var(--ether-font-small); font-size: var(--ether-size-small); font-weight: var(--ether-weight-small); }
+.typography-lab__preview[data-level="speed"],
 .typography-lab__preview[data-level="figures"] { border-left: 4px solid var(--ether-highlight); }
 .typography-lab__preview[data-level="small"] > div > strong { font-family: var(--ether-font-figures); font-size: 38px; font-weight: var(--ether-weight-figures); }
 
@@ -668,7 +697,14 @@ button { font: inherit; }
 
 @media (max-width: 1440px) {
   .typography-lab__content { grid-template-columns: 1fr; }
-  .typography-lab__controls { grid-template-columns: repeat(3, minmax(220px, 1fr)); }
+  .typography-lab__content > header { grid-template-columns: minmax(220px, 1fr) auto; align-items: center; }
+  .typography-lab__content > header p { grid-column: 1; }
+  .typography-lab__content > header button { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+@media (max-width: 1120px) {
+  .typography-lab fieldset { grid-template-columns: repeat(4, minmax(96px, 1fr)); }
+  .typography-lab__preview { grid-column: 1 / -1; grid-row: auto; min-height: 110px; }
 }
 
 @media (max-width: 1120px) {
@@ -694,7 +730,10 @@ button { font: inherit; }
 }
 
 @media (max-width: 760px) {
-  .typography-lab__controls { grid-template-columns: 1fr; }
+  .typography-lab__content > header { display: grid; grid-template-columns: 1fr; }
+  .typography-lab__content > header button { grid-column: 1; grid-row: auto; }
+  .typography-lab fieldset { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .typography-lab fieldset label:first-of-type { grid-column: 1 / -1; }
   .palette-lab__content { grid-template-columns: repeat(2, minmax(135px, 1fr)); }
   .shadow-lab fieldset,
   .shadow-lab fieldset:nth-child(3) { grid-template-columns: repeat(2, minmax(100px, 1fr)); }
