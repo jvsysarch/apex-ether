@@ -710,7 +710,16 @@ export function ApexEtherStudio() {
       <ShadowLab value={shadows} onChange={setShadows} />
       <GlassLab value={glass} onChange={setGlass} />
     </div> : null}
-    <section className="catalog-hero"><p>Apex Ether · sistema de telemetría</p><h1>Información que se lee.<br /><i>Espacio para conducir.</i></h1><div><span>Pantallas amplias · 24”+</span><span>Vidrio transparente · blanco opaco</span><span>Carrera · vehículo · estrategia</span></div></section>
+    <section className="catalog-hero">
+      <p>Apex Ether · sistema de telemetría</p>
+      <h1>Información inmediata.<br /><i>Espacio para decidir.</i></h1>
+      <p className="catalog-hero__lede">Telemetría clara para superficies amplias, con capas que acompañan la conducción sin ocultarla.</p>
+      <div>
+        <span>Lectura rápida</span>
+        <span>Opaco o vidrio transparente</span>
+        <span>Render selectivo de alto rendimiento</span>
+      </div>
+    </section>
     <section className="catalog-intro"><p>Una familia de interfaces de conducción, carrera y diagnóstico. No es una sola pantalla recargada: cada composición responde a un momento de uso y puede elegir sus propios paneles.</p></section>
     <Motivation />
     <section className="catalog-frames"><Frame title="Carrera en vivo" subtitle="Composición completa · información periférica" mode="glass" background="mountain"><RaceBroadcast mode="glass" /></Frame><Frame title="Ataque de vuelta" subtitle="Foco absoluto · feedback inmediato" mode="glass" background="night"><TrackAttack mode="glass" /></Frame><Frame title="Estado del vehículo" subtitle="Diagnóstico claro · datos comparables" mode="solid" background="mountain"><CarCare mode="solid" /></Frame><Frame title="Brief de sesión" subtitle="Configuración · objetivos y contexto" mode="solid" background="night"><SessionBrief mode="solid" /></Frame></section>

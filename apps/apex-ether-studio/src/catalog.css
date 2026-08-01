@@ -328,9 +328,9 @@ button { font: inherit; }
 
 .catalog-hero {
   display: grid;
-  min-height: 76vh;
+  min-height: 70vh;
   align-content: center;
-  gap: 32px;
+  gap: 24px;
   padding: clamp(40px, 8vw, 146px);
   color: #fff;
   background: linear-gradient(115deg, rgb(24 34 31 / 58%), rgb(31 42 38 / 12%)), var(--catalog-hero-image) center / cover;
@@ -348,22 +348,32 @@ button { font: inherit; }
 }
 
 .catalog-hero h1 {
-  max-width: 1050px;
+  max-width: 900px;
   margin: 0;
-  font-size: clamp(50px, 6.5vw, 122px);
+  font-size: clamp(44px, 5.2vw, 92px);
   font-weight: 700;
-  letter-spacing: -.072em;
-  line-height: .9;
+  letter-spacing: -.062em;
+  line-height: .94;
 }
 
 .catalog-hero h1 i { color: rgb(255 255 255 / 84%); font-style: normal; }
+.catalog-hero .catalog-hero__lede {
+  max-width: 780px;
+  margin: 0;
+  font-family: var(--ether-font-subtitle);
+  font-size: clamp(18px, 1.35vw, 24px);
+  font-weight: var(--ether-weight-subtitle);
+  letter-spacing: -.015em;
+  line-height: 1.42;
+  text-transform: none;
+}
 .catalog-hero div { display: flex; flex-wrap: wrap; gap: 10px; }
 .catalog-hero span {
   padding: 10px 14px;
   border: 1px solid rgb(255 255 255 / 72%);
   border-radius: 100px;
   background: rgb(24 34 31 / 58%);
-  font-size: 14px;
+  font-size: var(--ether-size-small);
   font-weight: 700;
 }
 
